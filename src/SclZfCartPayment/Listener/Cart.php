@@ -13,6 +13,15 @@ use SclZfCartPayment\Fetcher\MethodFetcherInterface;
 class Cart
 {
     /**
+     * @param \SclZfCart\Cart $cart
+     * @return MethodFetcherInterface
+     */
+    private static function getMethodFetcher(\SclZfCart\Cart $cart)
+    {
+        return $cart->getServiceLocator()->get('SclZfCartPayment\MethodFetcher');
+    }
+
+    /**
      * Inserts the select payment page into the checkout process.
      *
      * @todo Implement commented out bits
@@ -29,8 +38,7 @@ class Cart
         }
         */
 
-        /* @var $fetcher MethodFetcherInterface */
-        $fetcher = $cart->getServiceLocator()->get('SclZfCartPayment\MethodFetcher');
+        $fetcher = self::getMethodFetcher($cart);
 
         $method = $fetcher->getSelectedMethod();
 
@@ -52,16 +60,9 @@ class Cart
         /* @var $form \Zend\Form\Form */
         $form = $event->getTarget();
 
-        $form->setAttribute('action', 'Paypointurl');
-        $form->add(
-            array(
-                'name' => 'amount',
-                'type' => 'Zend\Form\Element\Hidden',
-                'attributes' => array(
-                    'value' => '10.50'
-                )
-            )
-        );
+        $method = self::getMethodFetcher($event->getCart())->getSelectedMethod();
+
+        $method->updateCompleteForm($form);
 
         $form->get('complete')->setValue('Confirm & Pay');
     }
