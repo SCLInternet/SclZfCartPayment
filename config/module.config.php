@@ -31,8 +31,8 @@ return array(
     ),
 
     'scl_zf_cart_payment' => array(
-        // Payment systems modules add themselves to this array
-        'payment_systems' => array(),
+        // Payment method modules add themselves to this array
+        'payment_methods' => array(),
     ),
 
     'view_manager' => array(

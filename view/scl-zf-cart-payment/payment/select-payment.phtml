@@ -1,1 +1,12 @@
-<?php echo $this->pageTitle('Select Payment Method'); ?>
+<?php
+echo $this->pageTitle('Select Payment Method');
+
+$form->prepare();
+
+echo $this->form()->openTag($form);
+?>
+    <?php echo $this->formRadio($form->get($form::ELEMENT_METHOD)); ?>
+
+    <?php echo $this->formSubmit($form->get($form::ELEMENT_SUBMIT)); ?>
+
+<?php echo $this->form()->closeTag($form); ?>

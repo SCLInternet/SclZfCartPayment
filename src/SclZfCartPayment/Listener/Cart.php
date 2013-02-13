@@ -3,6 +3,7 @@ namespace SclZfCartPayment\Listener;
 
 use SclZfCart\CartEvent;
 use SclZfCart\Utility\Route;
+use SclZfCartPayment\Fetcher\MethodFetcherInterface;
 
 /**
  * Provides the methods which are attach to the cart's event manager.
@@ -28,16 +29,17 @@ class Cart
         }
         */
 
-        /*
-        if (singlePaymentMethod) {
-            setPaymentMethod();
-            return null;
+        /* @var $fetcher MethodFetcherInterface */
+        $fetcher = $cart->getServiceLocator()->get('SclZfCartPayment\MethodFetcher');
+
+        $method = $fetcher->getSelectedMethod();
+
+        if ($fetcher::NO_METHOD_SELECTED === $method) {
+            $event->stopPropagation(true);
+            return new Route('payment/select-payment');
         }
-         */
 
-        $event->stopPropagation(true);
-
-        return new Route('payment/select-payment');
+        return null;
     }
 
     /**
