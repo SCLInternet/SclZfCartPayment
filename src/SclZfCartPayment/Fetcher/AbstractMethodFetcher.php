@@ -7,8 +7,8 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 abstract class AbstractMethodFetcher implements
-    MethodFetcherInterface,
-    ServiceLocatorAwareInterface
+     MethodFetcherInterface,
+     ServiceLocatorAwareInterface
 {
     /**
      * The service locator
