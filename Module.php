@@ -3,7 +3,6 @@
 namespace SclZfCartPayment;
 
 use SclZfCart\CartEvent;
-use SclZfCartPayment\Fetcher\ConfigFetcher;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
