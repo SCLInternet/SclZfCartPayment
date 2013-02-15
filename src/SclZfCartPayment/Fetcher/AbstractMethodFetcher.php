@@ -12,6 +12,7 @@ use Zend\Session\Container;
  * A convenient abstract class to extend when creating new payment methods.
  *
  * @author Tom Oram <tom@scl.co.uk>
+ * @todo Move getSelectedMethod & setSelectedMethod to some method storage class
  */
 abstract class AbstractMethodFetcher implements
      MethodFetcherInterface,
@@ -75,7 +76,8 @@ abstract class AbstractMethodFetcher implements
      * @return PaymentMethodInterface
      * @throws InvalidArgumentException
      */
-    protected function getMethodObject($methodName) {
+    protected function getMethodObject($methodName)
+    {
         $method = $this->getServiceLocator()->get($methodName);
 
         if (!$method instanceof PaymentMethodInterface) {
