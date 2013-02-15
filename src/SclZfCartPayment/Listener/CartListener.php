@@ -10,7 +10,7 @@ use SclZfCartPayment\Fetcher\MethodFetcherInterface;
  *
  * @author Tom Oram <tom@scl.co.uk>
  */
-class Cart
+class CartListener
 {
     /**
      * @param \SclZfCart\Cart $cart

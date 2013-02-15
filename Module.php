@@ -36,13 +36,13 @@ class Module implements
 
         $eventManager->attach(
             CartEvent::EVENT_CHECKOUT,
-            array('SclZfCartPayment\Listener\Cart', 'checkout'),
+            array('SclZfCartPayment\Listener\CartListener', 'checkout'),
             self::CHECKOUT_EVENT_PRIORITY
         );
 
         $eventManager->attach(
             CartEvent::EVENT_COMPLETE_FORM,
-            array('SclZfCartPayment\Listener\Cart', 'completeForm')
+            array('SclZfCartPayment\Listener\CartListener', 'completeForm')
         );
     }
 
