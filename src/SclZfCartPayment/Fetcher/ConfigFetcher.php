@@ -2,10 +2,9 @@
 
 namespace SclZfCartPayment\Fetcher;
 
-use Zend\ServiceManager\ServiceLocatorInterface;
 
-use SclZfCartPayment\Exception\InvalidArgumentException;
 use SclZfCartPayment\PaymentMethodInterface;
+use Zend\Session\Container;
 
 /**
  * Loads the services from the given config.
@@ -14,7 +13,6 @@ use SclZfCartPayment\PaymentMethodInterface;
  */
 class ConfigFetcher extends AbstractMethodFetcher
 {
-    const CONFIG_ROOT     = 'scl_zf_cart_payment';
     const PAYMENT_METHODS = 'payment_methods';
 
     /**
@@ -32,16 +30,14 @@ class ConfigFetcher extends AbstractMethodFetcher
     private $methods = null;
 
     /**
-     * {@inheritDoc}
-     *
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param Container $session
+     * @param array $config
      */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    public function __construct(Container $session, array $config)
     {
-        parent::setServiceLocator($serviceLocator);
+        parent::__construct($session);
 
-        $config = $serviceLocator->get('Config');
-        $this->config = $config[self::CONFIG_ROOT];
+        $this->config = $config;
     }
 
     /**
@@ -58,8 +54,7 @@ class ConfigFetcher extends AbstractMethodFetcher
         $this->methods = array();
 
         foreach ($this->config[self::PAYMENT_METHODS] as $name => $methodName) {
-            /* @var $method PaymentMethodInterface */
-            $method = $this->getServiceLocator()->get($methodName);
+            $method = $this->getMethodObject($methodName);
             $this->methods[$name] = $method->name();
         }
 
@@ -75,17 +70,7 @@ class ConfigFetcher extends AbstractMethodFetcher
     public function getMethod($methodName)
     {
         $methodName = $this->config[self::PAYMENT_METHODS][$methodName];
-        $method = $this->getServiceLocator()->get($methodName);
 
-        if (!$method instanceof PaymentMethodInterface) {
-            throw new InvalidArgumentException(
-                'SclZfCartPayment\PaymentMethodInterface',
-                $method,
-                __METHOD__,
-                __LINE__
-            );
-        }
-
-        return $method;
+        return $this->getMethodObject($methodName);
     }
 }

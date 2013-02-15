@@ -2,10 +2,17 @@
 
 namespace SclZfCartPayment\Fetcher;
 
+use SclZfCartPayment\Exception\InvalidArgumentException;
+use SclZfCartPayment\PaymentMethodInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\Session\Container;
 
+/**
+ * A convenient abstract class to extend when creating new payment methods.
+ *
+ * @author Tom Oram <tom@scl.co.uk>
+ */
 abstract class AbstractMethodFetcher implements
      MethodFetcherInterface,
      ServiceLocatorAwareInterface
@@ -16,7 +23,21 @@ abstract class AbstractMethodFetcher implements
      * @var ServiceLocatorInterface
      */
     private $serviceLocator;
-    
+
+    /**
+     * The session container
+     * @var Container
+     */
+    private $session;
+
+    /**
+     * @param Container $session
+     */
+    public function __construct(Container $session)
+    {
+        $this->session = $session;
+    }
+
     /**
      * {@inheritDoc}
      * 
@@ -45,6 +66,28 @@ abstract class AbstractMethodFetcher implements
     protected function getSession()
     {
         return $this->getServiceLocator()->get('SclZfCartPayment\Session');
+    }
+
+    /**
+     * Returns a instance of a payment method object by name.
+     * 
+     * @param string $methodName
+     * @return PaymentMethodInterface
+     * @throws InvalidArgumentException
+     */
+    protected function getMethodObject($methodName) {
+        $method = $this->getServiceLocator()->get($methodName);
+
+        if (!$method instanceof PaymentMethodInterface) {
+            throw new InvalidArgumentException(
+                'SclZfCartPayment\PaymentMethodInterface',
+                $method,
+                __METHOD__,
+                __LINE__
+            );
+        }
+
+        return $method;
     }
 
     /**

@@ -80,7 +80,9 @@ class Module implements
             ),
             'invokables' => array(
                 'SclZfCartPayment\Form\PaymentMethods'   => 'SclZfCartPayment\Form\PaymentMethods',
-                'SclZfCartPayment\Fetcher\ConfigFetcher' => 'SclZfCartPayment\Fetcher\ConfigFetcher',
+            ),
+            'factories' => array(
+                'SclZfCartPayment\Fetcher\ConfigFetcher' => 'SclZfCartPayment\Service\ConfigFetcherFactory',
             ),
         );
     }
