@@ -60,9 +60,12 @@ class Cart
         /* @var $form \Zend\Form\Form */
         $form = $event->getTarget();
 
-        $method = self::getMethodFetcher($event->getCart())->getSelectedMethod();
+        /* @var $cart \SclZfCart\Cart */
+        $cart = $event->getCart();
 
-        $method->updateCompleteForm($form);
+        $method = self::getMethodFetcher($cart)->getSelectedMethod();
+
+        $method->updateCompleteForm($form, $cart);
 
         $form->get('complete')->setValue('Confirm & Pay');
     }
