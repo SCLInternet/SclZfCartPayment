@@ -39,7 +39,25 @@ class MethodLoaderTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($mockedMethod));
 
         $result = $this->object->getMethod($methodName);
-        
+
         $this->assertEquals($mockedMethod, $result);
+    }
+
+    /**
+     * @covers SclZfCartPayment\Method\MethodLoader::getMethod
+     * @expectedException SclZfCartPayment\Exception\InvalidArgumentException
+     */
+    public function testGetMethodWithBadResult()
+    {
+        $methodName = 'TestMethod';
+
+        $mockedMethod = 'SomethingWrong';
+
+        $this->serviceLocator->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo($methodName))
+            ->will($this->returnValue($mockedMethod));
+
+        $result = $this->object->getMethod($methodName);
     }
 }

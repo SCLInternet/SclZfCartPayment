@@ -48,6 +48,7 @@ class MethodSelector implements MethodSelectorInterface
      * {@inheritDoc}
      *
      * @param string $methodName
+     * @todo Throw proper exception class
      */
     public function setSelectedMethod($methodName)
     {
