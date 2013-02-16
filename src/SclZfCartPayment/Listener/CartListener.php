@@ -3,7 +3,7 @@ namespace SclZfCartPayment\Listener;
 
 use SclZfCart\CartEvent;
 use SclZfCart\Utility\Route;
-use SclZfCartPayment\Fetcher\MethodFetcherInterface;
+use SclZfCartPayment\Method\MethodSelectorInterface;
 
 /**
  * Provides the methods which are attach to the cart's event manager.
@@ -14,11 +14,11 @@ class CartListener
 {
     /**
      * @param \SclZfCart\Cart $cart
-     * @return MethodFetcherInterface
+     * @return MethodSelectorInterface
      */
-    private static function getMethodFetcher(\SclZfCart\Cart $cart)
+    private static function getMethodSelector(\SclZfCart\Cart $cart)
     {
-        return $cart->getServiceLocator()->get('SclZfCartPayment\MethodFetcher');
+        return $cart->getServiceLocator()->get('SclZfCartPayment\MethodSelector');
     }
 
     /**
@@ -38,11 +38,9 @@ class CartListener
         }
         */
 
-        $fetcher = self::getMethodFetcher($cart);
+        $method = self::getMethodSelector($cart)->getSelectedMethod();
 
-        $method = $fetcher->getSelectedMethod();
-
-        if ($fetcher::NO_METHOD_SELECTED === $method) {
+        if (MethodSelectorInterface::NO_METHOD_SELECTED === $method) {
             $event->stopPropagation(true);
             return new Route('payment/select-payment');
         }
@@ -63,7 +61,7 @@ class CartListener
         /* @var $cart \SclZfCart\Cart */
         $cart = $event->getCart();
 
-        $method = self::getMethodFetcher($cart)->getSelectedMethod();
+        $method = self::getMethodSelector($cart)->getSelectedMethod();
 
         $method->updateCompleteForm($form, $cart);
 

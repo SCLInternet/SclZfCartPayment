@@ -1,7 +1,6 @@
 <?php
 
-namespace SclZfCartPayment\Fetcher;
-
+namespace SclZfCartPayment\Method;
 
 use SclZfCartPayment\PaymentMethodInterface;
 use Zend\Session\Container;
@@ -11,7 +10,7 @@ use Zend\Session\Container;
  *
  * @author Tom Oram <tom@scl.co.uk>
  */
-class ConfigFetcher extends AbstractMethodFetcher
+class ConfigFetcher implements MethodFetcherInterface
 {
     const PAYMENT_METHODS = 'payment_methods';
 
@@ -30,13 +29,18 @@ class ConfigFetcher extends AbstractMethodFetcher
     private $methods = null;
 
     /**
-     * @param Container $session
-     * @param array $config
+     * 
+     * @var MethodLoaderInterface
      */
-    public function __construct(Container $session, array $config)
-    {
-        parent::__construct($session);
+    private $loader;
 
+    /**
+     * @param MethodLoaderInterface $loader
+     * @param array                 $config
+     */
+    public function __construct(MethodLoaderInterface $loader, array $config)
+    {
+        $this->loader = $loader;
         $this->config = $config;
     }
 
@@ -54,7 +58,7 @@ class ConfigFetcher extends AbstractMethodFetcher
         $this->methods = array();
 
         foreach ($this->config[self::PAYMENT_METHODS] as $name => $methodName) {
-            $method = $this->getMethodObject($methodName);
+            $method = $this->loader->getMethod($methodName);
             $this->methods[$name] = $method->name();
         }
 
@@ -71,6 +75,6 @@ class ConfigFetcher extends AbstractMethodFetcher
     {
         $methodName = $this->config[self::PAYMENT_METHODS][$methodName];
 
-        return $this->getMethodObject($methodName);
+        return $this->loader->getMethod($methodName);
     }
 }

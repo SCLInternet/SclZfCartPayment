@@ -19,8 +19,11 @@ class PaymentController extends AbstractActionController
      */
     public function selectPaymentAction()
     {
-        /* @var $fetcher \SclZfCartPayment\Fetcher\MethodFetcherInterface */
+        /* @var $fetcher \SclZfCartPayment\Method\MethodFetcherInterface */
         $fetcher = $this->getServiceLocator()->get('SclZfCartPayment\MethodFetcher');
+
+        /* @var $selector \SclZfCartPayment\Method\MethodSelectorInterface */
+        $selector = $this->getServiceLocator()->get('SclZfCartPayment\MethodSelector');
 
         /* @var $form \SclZfCartPayment\Form\PaymentMethods */
         $form = $this->getServiceLocator()->get('SclZfCartPayment\Form\PaymentMethods');
@@ -30,7 +33,7 @@ class PaymentController extends AbstractActionController
         $form->addMethods($fetcher->listMethods());
 
         if ($this->formSubmitted($form)) {
-            $fetcher->setSelectedMethod($form->get($form::ELEMENT_METHOD)->getValue());
+            $selector->setSelectedMethod($form->get($form::ELEMENT_METHOD)->getValue());
             return $this->redirect()->toRoute('cart/checkout');
         }
 

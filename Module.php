@@ -75,14 +75,18 @@ class Module implements
     {
         return array(
             'aliases' => array(
-                'SclZfCartPayment\MethodFetcher' => 'SclZfCartPayment\Fetcher\ConfigFetcher',
-                'SclZfCartPayment\Session'       => 'SclZfCart\Session',
+                'SclZfCartPayment\MethodFetcher'  => 'SclZfCartPayment\Method\ConfigFetcher',
+                'SclZfCartPayment\MethodLoader'   => 'SclZfCartPayment\Method\MethodLoader',
+                'SclZfCartPayment\MethodSelector' => 'SclZfCartPayment\Method\MethodSelector',
+                'SclZfCartPayment\Session'        => 'SclZfCart\Session',
             ),
             'invokables' => array(
-                'SclZfCartPayment\Form\PaymentMethods'   => 'SclZfCartPayment\Form\PaymentMethods',
+                'SclZfCartPayment\Form\PaymentMethods' => 'SclZfCartPayment\Form\PaymentMethods',
+                'SclZfCartPayment\Method\MethodLoader' => 'SclZfCartPayment\Method\MethodLoader',
             ),
             'factories' => array(
-                'SclZfCartPayment\Fetcher\ConfigFetcher' => 'SclZfCartPayment\Service\ConfigFetcherFactory',
+                'SclZfCartPayment\Method\ConfigFetcher'  => 'SclZfCartPayment\Service\ConfigFetcherFactory',
+                'SclZfCartPayment\Method\MethodSelector' => 'SclZfCartPayment\Service\MethodSelectorFactory',
             ),
         );
     }

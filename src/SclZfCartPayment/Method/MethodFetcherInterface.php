@@ -1,6 +1,6 @@
 <?php
 
-namespace SclZfCartPayment\Fetcher;
+namespace SclZfCartPayment\Method;
 
 use SclZfCartPayment\PaymentMethodInterface;
 
@@ -28,18 +28,4 @@ interface MethodFetcherInterface
      * @return PaymentMethodInterface
      */
     public function getMethod($methodName);
-
-    /**
-     * Saves the selected payment method
-     *
-     * @param string $methodName
-     */
-    public function setSelectedMethod($methodName);
-
-    /**
-     * Returns the selected payment method.
-     *
-     * @return PaymentMethodInterface
-     */
-    public function getSelectedMethod();
 }

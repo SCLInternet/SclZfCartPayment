@@ -1,7 +1,7 @@
 <?php
 namespace SclZfCartPayment\Service;
 
-use SclZfCartPayment\Fetcher\ConfigFetcher;
+use SclZfCartPayment\Method\ConfigFetcher;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -22,12 +22,12 @@ class ConfigFetcherFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $session = $serviceLocator->get('SclZfCartPayment\Session');
+        $loader = $serviceLocator->get('SclZfCartPayment\MethodLoader');
 
         $config = $serviceLocator->get('Config');
 
         $config = $config[self::CONFIG_KEY];
 
-        return new ConfigFetcher($session, $config);
+        return new ConfigFetcher($loader, $config);
     }
 }
