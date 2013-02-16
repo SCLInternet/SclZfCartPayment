@@ -2,6 +2,7 @@
 
 namespace SclZfCartPayment\Method;
 
+use SclZfCartPayment\Exception\NonExistentMethodException;
 use SclZfCartPayment\PaymentMethodInterface;
 use Zend\Session\Container;
 
@@ -35,16 +36,6 @@ class MethodSelector implements MethodSelectorInterface
     }
 
     /**
-     * Gets the session storage container
-     *
-     * @return \Zend\Session\Container
-     */
-    protected function getSession()
-    {
-        return $this->session;
-    }
-
-    /**
      * {@inheritDoc}
      *
      * @param string $methodName
@@ -55,11 +46,10 @@ class MethodSelector implements MethodSelectorInterface
         $methods = $this->fetcher->listMethods();
 
         if (!isset($methods[$methodName])) {
-            throw new \Exception("Invalid payment method name '{$methodName}' given.");
+            throw new NonExistentMethodException("Invalid payment method name '{$methodName}' given.");
         }
 
-        $session = $this->getSession();
-        $session->paymentMethod = $methodName;
+        $this->session->paymentMethod = $methodName;
     }
 
     /**
@@ -77,16 +67,14 @@ class MethodSelector implements MethodSelectorInterface
             return self::NO_METHODS_AVAILABLE;
         }
 
-        $session = $this->getSession();
-
         if ($numMethods == 1) {
-            $session->paymentMethod = key($methods);
+            $this->session->paymentMethod = key($methods);
         }
 
-        if (!$session->paymentMethod) {
+        if (!$this->session->paymentMethod) {
             return self::NO_METHOD_SELECTED;
         }
 
-        return $this->fetcher->getMethod($session->paymentMethod);
+        return $this->fetcher->getMethod($this->session->paymentMethod);
     }
 }
