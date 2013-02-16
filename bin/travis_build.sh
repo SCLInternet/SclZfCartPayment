@@ -4,6 +4,10 @@
 phpunit
 PHPUNIT=$?
 
+### Check the code coverage
+php coverage-checker.php clover.xml 60
+COVERAGE=$?
+
 ### Check coding standards
 vendor/bin/phpcs --standard=psr2 src
 PHPCS=$?
@@ -37,6 +41,10 @@ echo "#### RESULTS:"
 
 if [ "$PHPUNIT" -ne "0" ]; then
     echo "**** Unit tests failed"
+    EXIT=1
+fi
+if [ "$COVERAGE" -ne "0" ]; then
+    echo "**** Coverage is too low"
     EXIT=1
 fi
 if [ "$PHPCS" -ne "0" ]; then
