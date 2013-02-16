@@ -2,7 +2,7 @@
 
 namespace SclZfCartPayment\Controller;
 
-use SclAdmin\Controller\AbstractActionController;
+use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Form\Form;
 
 /**

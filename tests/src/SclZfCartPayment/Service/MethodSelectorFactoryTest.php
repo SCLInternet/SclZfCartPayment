@@ -21,22 +21,28 @@ class MethodSelectorFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-    }
-
-    /**
      * @covers SclZfCartPayment\Service\MethodSelectorFactory::createService
-     * @todo   Implement testCreateService().
      */
     public function testCreateService()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $serviceLocator = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
+
+        $serviceLocator->expects($this->at(0))
+            ->method('get')
+            ->with($this->equalTo('SclZfCartPayment\MethodFetcher'))
+            ->will($this->returnValue($this->getMock('SclZfCartPayment\Method\MethodFetcherInterface')));
+
+        $session = $this->getMockBuilder('Zend\Session\Container')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $serviceLocator->expects($this->at(1))
+            ->method('get')
+            ->with($this->equalTo('SclZfCartPayment\Session'))
+            ->will($this->returnValue($session));
+
+        $selector = $this->object->createService($serviceLocator);
+
+        $this->assertInstanceOf('SclZfCartPayment\Method\MethodSelector', $selector);
     }
 }

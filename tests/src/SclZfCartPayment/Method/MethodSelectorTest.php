@@ -27,9 +27,8 @@ class MethodSelectorTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->session = $this->getMockBuilder('Zend\Session\Container')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->session = new \Zend\Session\Container('test');
+        $this->session->paymentMethod = null;
 
         $this->fetcher = $this->getMock('SclZfCartPayment\Method\MethodFetcherInterface');
 
@@ -38,25 +37,138 @@ class MethodSelectorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers SclZfCartPayment\Method\MethodSelector::setSelectedMethod
-     * @todo   Implement testSetSelectedMethod().
      */
     public function testSetSelectedMethod()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+        $methods = array(
+            'theMethod' => 'BlahBlahBlah'
+        );
+
+        $this->fetcher->expects($this->atLeastOnce())
+            ->method('listMethods')
+            ->will($this->returnValue($methods));
+
+        $this->object->setSelectedMethod('theMethod');
+
+        $this->assertEquals('theMethod', $this->session->paymentMethod);
+    }
+
+    /**
+     * @covers SclZfCartPayment\Method\MethodSelector::setSelectedMethod
+     * @expectedException \SclZfCartPayment\Exception\NonExistentMethodException
+     */
+    public function testSetSelectedMethodWithInvalidName()
+    {
+        $methods = array(
+            'theMethod' => 'BlahBlahBlah'
+        );
+
+        $this->fetcher->expects($this->atLeastOnce())
+            ->method('listMethods')
+            ->will($this->returnValue($methods));
+
+        $this->object->setSelectedMethod('badName');
+    }
+
+    /**
+     * The for when getSelectedMethods is called but the system is not
+     * configured with any payment methods.
+     *
+     * @covers SclZfCartPayment\Method\MethodSelector::getSelectedMethod
+     */
+    public function testGetSelectedMethodWithNoMethods()
+    {
+        $methods = array(
+        );
+
+        $this->fetcher->expects($this->atLeastOnce())
+            ->method('listMethods')
+            ->will($this->returnValue($methods));
+
+        $method = $this->object->getSelectedMethod();
+
+        $this->assertEquals(
+            MethodSelectorInterface::NO_METHODS_AVAILABLE,
+            $method
+        );
+    }
+    
+    /**
+     * The for when getSelectedMethods is called and the system is only
+     * configured with 1 method.
+     *
+     * @covers SclZfCartPayment\Method\MethodSelector::getSelectedMethod
+     */
+    public function testGetSelectedMethodWithNoneSelected()
+    {
+        $methods = array(
+            'method1' => 'BlahBlahBlah',
+            'method2' => 'BlahBlahBlah',
+        );
+
+        $this->fetcher->expects($this->atLeastOnce())
+            ->method('listMethods')
+            ->will($this->returnValue($methods));
+
+        $method = $this->object->getSelectedMethod();
+
+        $this->assertEquals(
+            MethodSelectorInterface::NO_METHOD_SELECTED,
+            $method
         );
     }
 
     /**
+     * The for when getSelectedMethods is called and the system is only
+     * configured with 1 method.
+     *
      * @covers SclZfCartPayment\Method\MethodSelector::getSelectedMethod
-     * @todo   Implement testGetSelectedMethod().
+     */
+    public function testGetSelectedMethodWithSingleMethod()
+    {
+        $methods = array(
+            'singleMethod' => 'BlahBlahBlah'
+        );
+
+        $this->fetcher->expects($this->atLeastOnce())
+            ->method('listMethods')
+            ->will($this->returnValue($methods));
+
+        $this->fetcher->expects($this->once())
+            ->method('getMethod')
+            ->with($this->equalTo('singleMethod'))
+            ->will($this->returnValue('TheMethodObject'));
+
+        $method = $this->object->getSelectedMethod();
+
+        $this->assertEquals('TheMethodObject', $method);
+    }
+
+    /**
+     * The for when getSelectedMethods is called and a valid method is selected.
+     *
+     * @covers SclZfCartPayment\Method\MethodSelector::getSelectedMethod
      */
     public function testGetSelectedMethod()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+        $methods = array(
+            'method1' => 'BlahBlahBlah',
+            'method2' => 'BlahBlahBlah',
         );
+
+        $this->session->paymentMethod = 'method2';
+
+        $this->fetcher->expects($this->atLeastOnce())
+            ->method('listMethods')
+            ->will($this->returnValue($methods));
+
+        $this->fetcher->expects($this->once())
+            ->method('getMethod')
+            ->with($this->equalTo('method2'))
+            ->will($this->returnValue('TheMethodObject'));
+
+        $method = $this->object->getSelectedMethod();
+
+        $this->assertEquals('TheMethodObject', $method);
     }
 }

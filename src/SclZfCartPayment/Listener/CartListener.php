@@ -29,8 +29,7 @@ class CartListener
      */
     public static function checkout(CartEvent $event)
     {
-        /* @var $cart \SclZfCart\Cart */
-        $cart = $event->getTarget();
+        $cart = $event->getCart();
 
         /*
         if (0 == $cart->getTotal()) {

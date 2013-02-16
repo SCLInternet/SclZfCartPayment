@@ -10,6 +10,12 @@ class MethodLoaderTest extends \PHPUnit_Framework_TestCase
      * @var MethodLoader
      */
     protected $object;
+    
+    /**
+     * 
+     * @var Zend\ServiceManager\ServiceLocatorInterface
+     */
+    protected $serviceLocator;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -22,6 +28,18 @@ class MethodLoaderTest extends \PHPUnit_Framework_TestCase
         $this->object = new MethodLoader;
 
         $this->object->setServiceLocator($this->serviceLocator);
+    }
+
+    /**
+     * @covers SclZfCartPayment\Method\MethodLoader::getServiceLocator
+     * @covers SclZfCartPayment\Method\MethodLoader::setServiceLocator
+     */
+    public function testServiceLocatorAwareInterface()
+    {
+        $newServiceLocator = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
+        $this->object->setServiceLocator($newServiceLocator);
+
+        $this->assertEquals($newServiceLocator, $this->object->getServiceLocator());
     }
 
     /**

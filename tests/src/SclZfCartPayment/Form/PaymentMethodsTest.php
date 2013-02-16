@@ -21,22 +21,31 @@ class PaymentMethodsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
+     * @covers SclZfCartPayment\Form\PaymentMethods::__construct
      */
-    protected function tearDown()
+    public function testConstruction()
     {
+        $this->assertEquals('post', $this->object->getAttribute('method'));
+
+        $submit = $this->object->get(PaymentMethods::ELEMENT_SUBMIT);
+        $this->assertInstanceOf('Zend\Form\Element\Submit', $submit);
     }
 
     /**
      * @covers SclZfCartPayment\Form\PaymentMethods::addMethods
-     * @todo   Implement testAddMethods().
+     * @todo   Check the radio values
      */
     public function testAddMethods()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+        $methods = array(
+            'method1' => 'The Great Method',
+            'method2' => 'Another Great Method',
         );
+
+        $this->object->addMethods($methods);
+
+        $element = $this->object->get(PaymentMethods::ELEMENT_METHOD);
+
+        $this->assertInstanceOf('Zend\Form\Element\Radio', $element);
     }
 }
