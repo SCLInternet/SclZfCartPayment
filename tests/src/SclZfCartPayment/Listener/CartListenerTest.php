@@ -39,6 +39,7 @@ class CartListenerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers SclZfCartPayment\Listener\CartListener::checkout
+     * @covers SclZfCartPayment\Listener\CartListener::getMethodSelector
      */
     public function testCheckoutWithSelectedMethod()
     {
@@ -55,6 +56,7 @@ class CartListenerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers SclZfCartPayment\Listener\CartListener::checkout
+     * @covers SclZfCartPayment\Listener\CartListener::getMethodSelector
      */
     public function testCheckoutWithoutSelectedMethod()
     {
