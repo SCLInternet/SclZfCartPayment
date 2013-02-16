@@ -17,50 +17,29 @@ class MethodLoaderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+        $this->serviceLocator = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
+
         $this->object = new MethodLoader;
-    }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-    }
-
-    /**
-     * @covers SclZfCartPayment\Method\MethodLoader::setServiceLocator
-     * @todo   Implement testSetServiceLocator().
-     */
-    public function testSetServiceLocator()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers SclZfCartPayment\Method\MethodLoader::getServiceLocator
-     * @todo   Implement testGetServiceLocator().
-     */
-    public function testGetServiceLocator()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->setServiceLocator($this->serviceLocator);
     }
 
     /**
      * @covers SclZfCartPayment\Method\MethodLoader::getMethod
-     * @todo   Implement testGetMethod().
      */
-    public function testGetMethod()
+    public function testGetMethodWithGoodResult()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $methodName = 'TestMethod';
+
+        $mockedMethod = $this->getMock('SclZfCartPayment\PaymentMethodInterface');
+
+        $this->serviceLocator->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo($methodName))
+            ->will($this->returnValue($mockedMethod));
+
+        $result = $this->object->getMethod($methodName);
+        
+        $this->assertEquals($mockedMethod, $result);
     }
 }
