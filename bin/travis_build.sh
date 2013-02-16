@@ -5,7 +5,7 @@ phpunit
 PHPUNIT=$?
 
 ### Check the code coverage
-php coverage-checker.php clover.xml 60
+php coverage-checker.php clover.xml 66
 COVERAGE=$?
 
 ### Check coding standards
