@@ -6,6 +6,7 @@ $form->prepare();
 echo $this->form()->openTag($form);
 ?>
     <?php echo $this->formRadio($form->get($form::ELEMENT_METHOD)); ?>
+    <?php echo $this->formElementErrors($form->get($form::ELEMENT_METHOD), array('class' => 'input-error')); ?>
 
     <?php echo $this->formSubmit($form->get($form::ELEMENT_SUBMIT)); ?>
 
