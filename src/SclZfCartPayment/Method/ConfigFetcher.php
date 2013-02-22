@@ -3,7 +3,6 @@
 namespace SclZfCartPayment\Method;
 
 use SclZfCartPayment\PaymentMethodInterface;
-use Zend\Session\Container;
 
 /**
  * Loads the services from the given config.
