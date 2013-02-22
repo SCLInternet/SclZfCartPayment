@@ -3,7 +3,6 @@
 namespace SclZfCartPayment\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Form\Form;
 
 /**
  * Displays a page letting the use decide which payment option they want to use.
