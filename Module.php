@@ -20,7 +20,8 @@ class Module implements
     ConfigProviderInterface,
     ServiceProviderInterface
 {
-    const CHECKOUT_EVENT_PRIORITY = 100;
+    const CHECKOUT_EVENT_PRIORITY = -100;
+    const COMPLETE_FORM_EVENT_PRIORITY  = -100;
 
     /**
      * {@inheritDoc}
@@ -43,7 +44,8 @@ class Module implements
 
         $eventManager->attach(
             CartEvent::EVENT_COMPLETE_FORM,
-            array('SclZfCartPayment\Listener\CartListener', 'completeForm')
+            array('SclZfCartPayment\Listener\CartListener', 'completeForm'),
+            self::COMPLETE_FORM_EVENT_PRIORITY
         );
     }
 
