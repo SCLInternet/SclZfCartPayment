@@ -20,12 +20,13 @@ class Module implements
     ConfigProviderInterface,
     ServiceProviderInterface
 {
-    const CHECKOUT_EVENT_PRIORITY = 1000;
+    const CHECKOUT_EVENT_PRIORITY = 100;
 
     /**
      * {@inheritDoc}
      *
      * @param \Zend\EventManager\EventInterface $e
+     * @todo Maybe use the shared event manager instead.
      */
     public function onBootstrap(EventInterface $e)
     {
