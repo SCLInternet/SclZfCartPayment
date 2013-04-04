@@ -1,9 +1,11 @@
 <?php
 
+namespace SclZfCartPayment;
+
 return array(
     'controllers' => array(
         'invokables' => array(
-            'SclZfCartPayment\Controller\Payment' => 'SclZfCartPayment\Controller\PaymentController',
+            __NAMESPACE__ . '\Controller\Payment' => __NAMESPACE__ . '\Controller\PaymentController',
         ),
     ),
 
@@ -20,7 +22,7 @@ return array(
                         'options' => array(
                             'route'    => '/select-payment',
                             'defaults' => array(
-                                'controller' => 'SclZfCartPayment\Controller\Payment',
+                                'controller' => __NAMESPACE__ . '\Controller\Payment',
                                 'action'     => 'selectPayment',
                             ),
                         ),
@@ -37,7 +39,7 @@ return array(
 
     'view_manager' => array(
         'template_path_stack' => array(
-            'SclZfCartPayment\Controller' => __DIR__ . '/../view',
+            __NAMESPACE__ . '\Controller' => __DIR__ . '/../view',
         ),
     ),
 );
