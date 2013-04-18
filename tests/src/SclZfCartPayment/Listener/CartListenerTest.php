@@ -21,7 +21,7 @@ class CartListenerTest extends \PHPUnit_Framework_TestCase
         $serviceLocator = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
         $serviceLocator->expects($this->any())
             ->method('get')
-            ->with($this->equalTo('SclZfCartPayment\MethodSelector'))
+            ->with($this->equalTo('SclZfCartPayment\Method\MethodSelectorInterface'))
             ->will($this->returnValue($this->selector));
 
         $this->cart = $this->getMock('SclZfCart\Cart');

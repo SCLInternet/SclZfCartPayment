@@ -6,6 +6,7 @@ use SclZfUtilities\Model\Route;
 use SclZfCartPayment\Method\MethodSelectorInterface;
 use Zend\Form\Form;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use SclZfCartPayment\Entity\PaymentInterface;
 
 /**
  * Provides the methods which are attach to the cart's event manager.
@@ -20,7 +21,7 @@ class CartListener
      */
     protected static function getMethodSelector(ServiceLocatorInterface $serviceLocator)
     {
-        return $serviceLocator->get('SclZfCartPayment\MethodSelector');
+        return $serviceLocator->get('SclZfCartPayment\Method\MethodSelectorInterface');
     }
 
     /**
@@ -64,6 +65,29 @@ class CartListener
     }
 
     /**
+     * Creates a form to redirect to the payment page.
+     *
+     * @return Form
+     */
+    protected static function createRedirectForm()
+    {
+        $form = new Form('payment-form');
+
+        $form->add(
+            array(
+                'name' => 'complete',
+                'type' => 'Zend\Form\Element\Submit',
+                'attributes' => array(
+                    'id' => 'complete',
+                    'value' => 'Proceed',
+                ),
+            )
+        );
+
+        return $form;
+    }
+
+    /**
      * Adjusts the complete checkout button to redirect to the payment page.
      *
      * @param  CartEvent               $event
@@ -85,19 +109,17 @@ class CartListener
 
         $event->stopPropagation(true);
 
-        $form = new Form('payment-form');
+        $mapper = $serviceLocator->get('SclZfCartPayment\Mapper\PaymentMapperInterface');
+        $payment = $mapper->create();
+        $payment->setDate(new \DateTime());
+        $payment->setOrder($order);
+        $payment->setStatus(PaymentInterface::STATUS_PENDING);
+        //$payment->setAmount($order->getAmount());
+        $mapper->save($payment);
 
-        $form->add(
-            array(
-                'name' => 'complete',
-                'type' => 'Zend\Form\Element\Submit',
-                'attributes' => array(
-                    'id' => 'complete',
-                    'value' => 'Proceed',
-                ),
-            )
-        );
+        $form = self::createRedirectForm();
 
+        //$method->updateCompleteForm($form, $payment);
         $method->updateCompleteForm($form, $order);
 
         return $form;

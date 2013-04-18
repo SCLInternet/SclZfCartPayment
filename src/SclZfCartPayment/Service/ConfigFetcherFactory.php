@@ -22,7 +22,7 @@ class ConfigFetcherFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $loader = $serviceLocator->get('SclZfCartPayment\MethodLoader');
+        $loader = $serviceLocator->get('SclZfCartPayment\Method\MethodLoaderInterface');
 
         $config = $serviceLocator->get('Config');
 

@@ -91,10 +91,11 @@ class Module implements
     {
         return array(
             'aliases' => array(
-                'SclZfCartPayment\MethodFetcher'  => 'SclZfCartPayment\Method\ConfigFetcher',
-                'SclZfCartPayment\MethodLoader'   => 'SclZfCartPayment\Method\MethodLoader',
-                'SclZfCartPayment\MethodSelector' => 'SclZfCartPayment\Method\MethodSelector',
-                'SclZfCartPayment\Session'        => 'SclZfCart\Session',
+                'SclZfCartPayment\Method\MethodFetcherInterface' => 'SclZfCartPayment\Method\ConfigFetcher',
+                'SclZfCartPayment\Method\MethodLoaderInterface'  => 'SclZfCartPayment\Method\MethodLoader',
+                'SclZfCartPayment\Method\MethodSelectorInterface'=> 'SclZfCartPayment\Method\MethodSelector',
+                'SclZfCartPayment\Session'                       => 'SclZfCart\Session',
+                'SclZfCartPayment\Mapper\PaymentMapperInterface' => 'SclZfCartPayment\Mapper\DoctrinePaymentMapper',
             ),
             'invokables' => array(
                 'SclZfCartPayment\Form\PaymentMethods' => 'SclZfCartPayment\Form\PaymentMethods',
@@ -103,6 +104,12 @@ class Module implements
             'factories' => array(
                 'SclZfCartPayment\Method\ConfigFetcher'  => 'SclZfCartPayment\Service\ConfigFetcherFactory',
                 'SclZfCartPayment\Method\MethodSelector' => 'SclZfCartPayment\Service\MethodSelectorFactory',
+                'SclZfCartPayment\Mapper\DoctrinePaymentMapper' => function ($sm) {
+                    return new \SclZfCartPayment\Mapper\DoctrinePaymentMapper(
+                        $sm->get('doctrine.entitymanager.orm_default'),
+                        $sm->get('SclZfUtilities\Doctrine\FlushLock')
+                    );
+                },
             ),
         );
     }

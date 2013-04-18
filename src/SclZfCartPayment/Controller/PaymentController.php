@@ -19,10 +19,10 @@ class PaymentController extends AbstractActionController
     public function selectPaymentAction()
     {
         /* @var $fetcher \SclZfCartPayment\Method\MethodFetcherInterface */
-        $fetcher = $this->getServiceLocator()->get('SclZfCartPayment\MethodFetcher');
+        $fetcher = $this->getServiceLocator()->get('SclZfCartPayment\Method\MethodFetcherInterface');
 
         /* @var $selector \SclZfCartPayment\Method\MethodSelectorInterface */
-        $selector = $this->getServiceLocator()->get('SclZfCartPayment\MethodSelector');
+        $selector = $this->getServiceLocator()->get('SclZfCartPayment\Method\MethodSelectorInterface');
 
         /* @var $form \SclZfCartPayment\Form\PaymentMethods */
         $form = $this->getServiceLocator()->get('SclZfCartPayment\Form\PaymentMethods');

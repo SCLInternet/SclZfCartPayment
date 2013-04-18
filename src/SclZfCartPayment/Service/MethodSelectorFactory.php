@@ -22,7 +22,7 @@ class MethodSelectorFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $fetcher = $serviceLocator->get('SclZfCartPayment\MethodFetcher');
+        $fetcher = $serviceLocator->get('SclZfCartPayment\Method\MethodFetcherInterface');
 
         $session = $serviceLocator->get('SclZfCartPayment\Session');
 

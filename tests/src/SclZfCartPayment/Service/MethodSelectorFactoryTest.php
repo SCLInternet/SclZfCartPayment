@@ -29,7 +29,7 @@ class MethodSelectorFactoryTest extends \PHPUnit_Framework_TestCase
 
         $serviceLocator->expects($this->at(0))
             ->method('get')
-            ->with($this->equalTo('SclZfCartPayment\MethodFetcher'))
+            ->with($this->equalTo('SclZfCartPayment\Method\MethodFetcherInterface'))
             ->will($this->returnValue($this->getMock('SclZfCartPayment\Method\MethodFetcherInterface')));
 
         $session = $this->getMockBuilder('Zend\Session\Container')
