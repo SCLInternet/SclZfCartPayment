@@ -114,7 +114,10 @@ class CartListener
         $payment->setDate(new \DateTime());
         $payment->setOrder($order);
         $payment->setStatus(PaymentInterface::STATUS_PENDING);
-        //$payment->setAmount($order->getAmount());
+        $payment->setType(get_class($method));
+        // @todo FIXME
+        $payment->setAmount(0);
+
         $mapper->save($payment);
 
         $form = self::createRedirectForm();
