@@ -1,7 +1,7 @@
 <?php
 namespace SclZfCartPayment;
 
-use SclZfCart\Cart;
+use SclZfCart\Entity\OrderInterface;
 use Zend\Form\Form;
 
 /**
@@ -22,15 +22,16 @@ interface PaymentMethodInterface
     /**
      * The payment method may update the confirm form.
      *
-     * @param Form $form
-     * @param Cart $cart
+     * @param  Form          $form
+     * @param  OrderInteface $cart
+     * @return void
      */
-    public function updateCompleteForm(Form $form, Cart $cart);
+    public function updateCompleteForm(Form $form, OrderInterface $cart);
 
     /**
      * Takes the values returned from the payment method and completes the payment.
      *
-     * @param array $data
+     * @param  array $data
      * @return boolean Return true if the payment was successful
      */
     public function complete(array $data);

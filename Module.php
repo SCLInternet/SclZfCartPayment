@@ -20,8 +20,8 @@ class Module implements
     ConfigProviderInterface,
     ServiceProviderInterface
 {
-    const CHECKOUT_EVENT_PRIORITY = -100;
-    const COMPLETE_FORM_EVENT_PRIORITY  = -100;
+    const CHECKOUT_EVENT_PRIORITY = 100;
+    const PROCESS_EVENT_PRIORITY  = 100;
 
     /**
      * {@inheritDoc}
@@ -36,16 +36,29 @@ class Module implements
         $cart = $serviceLocator->get('SclZfCart\Cart');
         $eventManager = $cart->getEventManager();
 
+        /*
+        $eventManager->attach(
+            CartEvent::EVENT_CLEAR,
+            function (CartEvent $event) use ($serviceLocator) {
+                return \SclZfCartPayment\Listener\CartListener::clear($event, $serviceLocator);
+            }
+        );
+        */
+
         $eventManager->attach(
             CartEvent::EVENT_CHECKOUT,
-            array('SclZfCartPayment\Listener\CartListener', 'checkout'),
+            function (CartEvent $event) use ($serviceLocator) {
+                return \SclZfCartPayment\Listener\CartListener::checkout($event, $serviceLocator);
+            },
             self::CHECKOUT_EVENT_PRIORITY
         );
 
         $eventManager->attach(
-            CartEvent::EVENT_COMPLETE_FORM,
-            array('SclZfCartPayment\Listener\CartListener', 'completeForm'),
-            self::COMPLETE_FORM_EVENT_PRIORITY
+            CartEvent::EVENT_PROCESS,
+            function (CartEvent $event) use ($serviceLocator) {
+                return \SclZfCartPayment\Listener\CartListener::process($event, $serviceLocator);
+            },
+            self::PROCESS_EVENT_PRIORITY
         );
     }
 

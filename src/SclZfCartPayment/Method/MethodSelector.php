@@ -38,7 +38,18 @@ class MethodSelector implements MethodSelectorInterface
     /**
      * {@inheritDoc}
      *
-     * @param string $methodName
+     * @return void
+     */
+    public function reset()
+    {
+        $this->session->paymentMethod = null;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param  string $methodName
+     * @return void
      * @todo Throw proper exception class
      */
     public function setSelectedMethod($methodName)

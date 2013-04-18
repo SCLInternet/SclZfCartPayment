@@ -15,9 +15,17 @@ interface MethodSelectorInterface
     const NO_METHOD_SELECTED   = -2;
 
     /**
+     * Clears the currently selected payment method.
+     *
+     * @return void
+     */
+    public function reset();
+
+    /**
      * Saves the selected payment method
      *
-     * @param string $methodName
+     * @param  string $methodName
+     * @return void
      */
     public function setSelectedMethod($methodName);
 
