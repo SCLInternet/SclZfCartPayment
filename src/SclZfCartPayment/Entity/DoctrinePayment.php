@@ -4,6 +4,7 @@ namespace SclZfCartPayment\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use SclZfCart\Entity\OrderInterface;
 
 /**
  * Doctrine payment entity
@@ -28,6 +29,12 @@ class DoctrinePayment
      * @ORM\Column(type="string")
      */
     protected $status;
+    
+    /**
+     * @var DoctrineOrderInterface
+     * @ORM\ManyToOne(targetEntity="SclZfCart\Entity\DoctrineOrder")
+     */
+    protected $order;
 
     /**
      * @var DateTime
@@ -74,6 +81,52 @@ class DoctrinePayment
     public function setId($id)
     {
         $this->id = (int) $id;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return OrderInterface
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param  OrderInterface $order
+     * @return self
+     */
+    public function setOrder(OrderInterface $order)
+    {
+        $this->order = $order;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param  string $status
+     * @return self
+     */
+    public function setStatus($status)
+    {
+        $this->status = (string) $status;
 
         return $this;
     }
