@@ -36,15 +36,6 @@ class Module implements
         $cart = $serviceLocator->get('SclZfCart\Cart');
         $eventManager = $cart->getEventManager();
 
-        /*
-        $eventManager->attach(
-            CartEvent::EVENT_CLEAR,
-            function (CartEvent $event) use ($serviceLocator) {
-                return \SclZfCartPayment\Listener\CartListener::clear($event, $serviceLocator);
-            }
-        );
-        */
-
         $eventManager->attach(
             CartEvent::EVENT_CHECKOUT,
             function (CartEvent $event) use ($serviceLocator) {
