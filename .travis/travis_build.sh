@@ -1,12 +1,12 @@
 #!/bin/bash
 
 ### Run unit tests
-phpunit
+vendor/bin/phpunit
 PHPUNIT=$?
 
 ### Check the code coverage
-php coverage-checker.php clover.xml 66
-COVERAGE=$?
+#php coverage-checker.php clover.xml 66
+#COVERAGE=$?
 
 ### Check coding standards
 vendor/bin/phpcs --standard=psr2 src
@@ -43,10 +43,10 @@ if [ "$PHPUNIT" -ne "0" ]; then
     echo "**** Unit tests failed"
     EXIT=1
 fi
-if [ "$COVERAGE" -ne "0" ]; then
-    echo "**** Coverage is too low"
-    EXIT=1
-fi
+#if [ "$COVERAGE" -ne "0" ]; then
+#    echo "**** Coverage is too low"
+#    EXIT=1
+#fi
 if [ "$PHPCS" -ne "0" ]; then
     echo "**** Coding standards failed"
     EXIT=1

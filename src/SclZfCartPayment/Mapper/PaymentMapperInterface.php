@@ -4,5 +4,4 @@ namespace SclZfCartPayment\Mapper;
 
 interface PaymentMapperInterface
 {
-    
 }
