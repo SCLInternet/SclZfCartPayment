@@ -38,7 +38,7 @@ class ConfigFetcherTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers SclZfCartPayment\Method\ConfigFetcher::listMethods
-     * @todo   Implement testListMethods().
+     * @covers SclZfCartPayment\Method\ConfigFetcher::__construct
      */
     public function testListMethods()
     {

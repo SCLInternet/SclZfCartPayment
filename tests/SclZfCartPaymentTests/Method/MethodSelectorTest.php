@@ -152,6 +152,7 @@ class MethodSelectorTest extends \PHPUnit_Framework_TestCase
      * The for when getSelectedMethods is called and a valid method is selected.
      *
      * @covers SclZfCartPayment\Method\MethodSelector::getSelectedMethod
+     * @covers SclZfCartPayment\Method\MethodSelector::__construct
      */
     public function testGetSelectedMethod()
     {
@@ -174,5 +175,22 @@ class MethodSelectorTest extends \PHPUnit_Framework_TestCase
         $method = $this->object->getSelectedMethod();
 
         $this->assertEquals('TheMethodObject', $method);
+    }
+
+    /**
+     * Tests the reset method.
+     *
+     * @depends testGetSelectedMethod
+     * @covers SclZfCartPayment\Method\MethodSelector::reset
+     *
+     * @return void
+     */
+    public function testReset()
+    {
+        $this->session->paymentMethod = 'the-method';
+
+        $this->object->reset();
+
+        $this->assertNull($this->session->paymentMethod);
     }
 }
