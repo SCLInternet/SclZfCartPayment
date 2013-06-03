@@ -135,7 +135,7 @@ class CartListenerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers SclZfCartPayment\Listener\CartListener::completeForm
+     * @covers SclZfCartPayment\Listener\CartListener::process
      * @covers SclZfCartPayment\Listener\CartListener::createRedirectForm
      */
     public function testProcess()
