@@ -22,89 +22,159 @@ class CartListenerTest extends \PHPUnit_Framework_TestCase
     {
         $this->selector = $this->getMock('SclZfCartPayment\Method\MethodSelectorInterface');
 
-        $serviceLocator = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
-        $serviceLocator->expects($this->any())
+        $this->serviceLocator = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
+
+        $this->event = $this->getMock('SclZfCart\CartEvent');
+    }
+
+    protected function expectMethodSelector($expects)
+    {
+        $this->serviceLocator->expects($expects)
             ->method('get')
             ->with($this->equalTo('SclZfCartPayment\Method\MethodSelectorInterface'))
             ->will($this->returnValue($this->selector));
-
-        $this->cart = $this->getMock('SclZfCart\Cart');
-
-        $this->cart->expects($this->any())
-            ->method('getServiceLocator')
-            ->will($this->returnValue($serviceLocator));
-
-        $this->event = $this->getMock('SclZfCart\CartEvent');
-
-        $this->event->expects($this->any())
-            ->method('getCart')
-            ->will($this->returnValue($this->cart));
     }
 
     /**
+     * Test that if a payment method is already selected during checkout that
+     * nothing happens and checkout is continued.
+     *
      * @covers SclZfCartPayment\Listener\CartListener::checkout
      * @covers SclZfCartPayment\Listener\CartListener::getMethodSelector
+     *
+     * @return void
      */
     public function testCheckoutWithSelectedMethod()
     {
-        $this->markTestIncomplete('Test case is out of date');
-        /*
+        $this->expectMethodSelector($this->any());
+
         $method = $this->getMock('SclZfCartPayment\PaymentMethodInterface');
 
         $this->selector->expects($this->once())
-            ->method('getSelectedMethod')
-            ->will($this->returnValue($method));
+             ->method('getSelectedMethod')
+             ->will($this->returnValue($method));
 
-        $result = CartListener::checkout($this->event);
+        $result = CartListener::checkout($this->event, $this->serviceLocator);
 
         $this->assertNull($result);
-        */
     }
 
     /**
+     * Test that if no payment method is selected during checkout the user is
+     * redirected to the payment method selection page.
+     *
      * @covers SclZfCartPayment\Listener\CartListener::checkout
      * @covers SclZfCartPayment\Listener\CartListener::getMethodSelector
+     *
+     * @return void
      */
-    /*
     public function testCheckoutWithoutSelectedMethod()
     {
+        $this->expectMethodSelector($this->any());
+
         $this->selector->expects($this->once())
-            ->method('getSelectedMethod')
-            ->will($this->returnValue(MethodSelectorInterface::NO_METHOD_SELECTED));
+             ->method('getSelectedMethod')
+             ->will($this->returnValue(MethodSelectorInterface::NO_METHOD_SELECTED));
 
-        $result = CartListener::checkout($this->event);
+        $this->event
+             ->expects($this->atLeastOnce())
+             ->method('stopPropagation')
+             ->with($this->equalTo(true));
 
-        $this->assertInstanceOf('SclZfCart\Utility\Route', $result);
+        $result = CartListener::checkout($this->event, $this->serviceLocator);
+
+        $this->assertInstanceOf('SclZfUtilities\Model\Route', $result);
         $this->assertEquals('payment/select-payment', $result->route);
     }
-    */
+
+    /**
+     * Test when process() is passed an event with a target which isn't an instanceof
+     * \SclZfCart\Entity\OrderInterface that an exception is throw.
+     *
+     * @covers SclZfCartPayment\Listener\CartListener::process
+     * @expectedException SclZfCartPayment\Exception\RuntimeException
+     *
+     * @return void
+     */
+    public function testProcessWithBadOrder()
+    {
+        $this->event
+             ->expects($this->any())
+             ->method('getTarget')
+             ->will($this->returnValue(7));
+
+        CartListener::process($this->event, $this->serviceLocator);
+    }
+
+    /**
+     * Test that when process() is called but a payment method isn't selected
+     * that an exception is throw.
+     *
+     * @covers SclZfCartPayment\Listener\CartListener::process
+     * @expectedException SclZfCartPayment\Exception\RuntimeException
+     *
+     * @return void
+     */
+    public function testProcessWithNoPaymentMethod()
+    {
+        $order = $this->getMock('SclZfCart\Entity\OrderInterface');
+
+        $this->event
+             ->expects($this->any())
+             ->method('getTarget')
+             ->will($this->returnValue($order));
+
+        $this->expectMethodSelector($this->once());
+
+        $this->selector
+             ->expects($this->once())
+             ->method('getSelectedMethod')
+             ->will($this->returnValue('x'));
+
+        CartListener::process($this->event, $this->serviceLocator);
+    }
 
     /**
      * @covers SclZfCartPayment\Listener\CartListener::completeForm
+     * @covers SclZfCartPayment\Listener\CartListener::createRedirectForm
      */
-    /*
-    public function testCompleteForm()
+    public function testProcess()
     {
-        $form = $this->getMock('Zend\Form\Form');
-        $form->expects($this->any())
-            ->method('get')
-        ->will($this->returnValue($this->getMock('Zend\Form\ElementInterface')));
+        $order   = $this->getMock('SclZfCart\Entity\OrderInterface');
+        $method  = $this->getMock('SclZfCartPayment\PaymentMethodInterface');
+        $mapper  = $this->getMock('SclZfCartPayment\Mapper\PaymentMapperInterface');
+        $payment = $this->getMock('SclZfCartPayment\Entity\PaymentInterface');
 
         $this->event->expects($this->atLeastOnce())
-            ->method('getTarget')
-            ->will($this->returnValue($form));
+             ->method('getTarget')
+             ->will($this->returnValue($order));
 
-        $method = $this->getMock('SclZfCartPayment\PaymentMethodInterface');
+        $this->expectMethodSelector($this->at(0));
 
         $this->selector->expects($this->once())
-            ->method('getSelectedMethod')
-            ->will($this->returnValue($method));
+             ->method('getSelectedMethod')
+             ->will($this->returnValue($method));
+
+        $this->serviceLocator
+             ->expects($this->at(1))
+             ->method('get')
+             ->with($this->equalTo('SclZfCartPayment\Mapper\PaymentMapperInterface'))
+             ->will($this->returnValue($mapper));
+
+        $mapper->expects($this->once())
+               ->method('create')
+               ->will($this->returnValue($payment));
+
+        $mapper->expects($this->once())
+               ->method('save')
+               ->with($this->equalTo($payment));
 
         $method->expects($this->once())
-            ->method('updateCompleteForm')
-            ->with($this->equalTo($form), $this->equalTo($this->cart));
+               ->method('updateCompleteForm')
+               ;
+               // @todo check params
+               //->with($this->equalTo($form), $this->equalTo($order));
 
-        CartListener::completeForm($this->event);
+        CartListener::process($this->event, $this->serviceLocator);
     }
-    */
 }

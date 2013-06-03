@@ -3,11 +3,11 @@
 namespace SclZfCartPayment\Exception;
 
 /**
- * For when a method that doesn't exist is requested.
+ * RuntimeException
  *
  * @author Tom Oram <tom@scl.co.uk>
  */
-class NonExistentMethodException extends \Exception implements
+class RuntimeException extends \RuntimeException implements
     ExceptionInterface
 {
 }

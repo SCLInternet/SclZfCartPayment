@@ -4,6 +4,11 @@ namespace SclZfCartPayment\Mapper;
 
 use SclZfUtilities\Mapper\GenericDoctrineMapper;
 
+/**
+ * A doctrine version of PaymentMapperInterface.
+ *
+ * @author Tom Oram <tom@scl.co.uk>
+ */
 class DoctrinePaymentMapper extends GenericDoctrineMapper implements
     PaymentMapperInterface
 {

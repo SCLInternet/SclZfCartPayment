@@ -2,11 +2,14 @@
 namespace SclZfCartPayment\Listener;
 
 use SclZfCart\CartEvent;
-use SclZfUtilities\Model\Route;
+use SclZfCart\Entity\OrderInterface;
+use SclZfCartPayment\Entity\PaymentInterface;
+use SclZfCartPayment\Exception\RuntimeException;
 use SclZfCartPayment\Method\MethodSelectorInterface;
+use SclZfCartPayment\PaymentMethodInterface;
+use SclZfUtilities\Model\Route;
 use Zend\Form\Form;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use SclZfCartPayment\Entity\PaymentInterface;
 
 /**
  * Provides the methods which are attach to the cart's event manager.
@@ -93,23 +96,44 @@ class CartListener
      * @param  CartEvent               $event
      * @param  ServiceLocatorInterface $serviceLocator
      * @return Form
+     * @throws RuntimeException        When the event target isn't an instanceof OrderInterface
+     * @throws RuntimeException        When the a payment method is not selected
      */
     public static function process(CartEvent $event, ServiceLocatorInterface $serviceLocator)
     {
         /* @var $order \SclZfCart\Entity\OrderInterface */
         $order = $event->getTarget();
 
+        if (!$order instanceof OrderInterface) {
+            throw new RuntimeException(
+                sprintf(
+                    'Instance of %sexpected; got "%s" in %s on line %d.',
+                    '\SclZfCart\Entity\OrderInterface',
+                    is_object($order) ? get_class($order) : gettype($order),
+                    __FILE__,
+                    __LINE__
+                )
+            );
+        }
+
         $method = self::getMethodSelector($serviceLocator)->getSelectedMethod();
 
-        /*
         if (!$method instanceof PaymentMethodInterface) {
-            // BLAH
+            throw new RuntimeException(
+                sprintf(
+                    'Instance of %sexpected; got "%s" in %s on line %d.',
+                    '\SclZfCartPayment\PaymentMethodInterface',
+                    is_object($order) ? get_class($order) : gettype($order),
+                    __FILE__,
+                    __LINE__
+                )
+            );
         }
-        */
 
         $event->stopPropagation(true);
 
         $mapper = $serviceLocator->get('SclZfCartPayment\Mapper\PaymentMapperInterface');
+
         $payment = $mapper->create();
         $payment->setDate(new \DateTime());
         $payment->setOrder($order);

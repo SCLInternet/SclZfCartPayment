@@ -7,7 +7,8 @@ namespace SclZfCartPayment\Exception;
  *
  * @author Tom Oram <tom@scl.co.uk>
  */
-class InvalidArgumentException extends \InvalidArgumentException
+class InvalidArgumentException extends \InvalidArgumentException implements
+    ExceptionInterface
 {
     /**
      * Formats the message.
