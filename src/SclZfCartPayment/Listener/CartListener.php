@@ -122,8 +122,7 @@ class CartListener
 
         $form = self::createRedirectForm();
 
-        //$method->updateCompleteForm($form, $payment);
-        $method->updateCompleteForm($form, $order);
+        $method->updateCompleteForm($form, $order, $payment);
 
         return $form;
     }
