@@ -74,7 +74,7 @@ interface PaymentInterface
      * @param  DateTime $date
      * @return self
      */
-    public function setDate($date);
+    public function setDate(DateTime $date);
 
     /**
      * Get the type of transaction.
