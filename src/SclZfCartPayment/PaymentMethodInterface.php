@@ -24,13 +24,13 @@ interface PaymentMethodInterface
      * The payment method may update the confirm form.
      *
      * @param  Form             $form
-     * @param  OrderInteface    $cart
-     * @param  PaymentInterface $cart
+     * @param  OrderInteface    $order
+     * @param  PaymentInterface $payment
      * @return void
      */
     public function updateCompleteForm(
         Form $form,
-        OrderInterface $cart,
+        OrderInterface $order,
         PaymentInterface $payment
     );
 
