@@ -1,0 +1,26 @@
+<?php
+
+return array(
+    'scl_zf_cart_payment' => array(
+        /*
+         * List of payment method modules to be made available
+         * during the checkout process.
+         *
+         * The array key must just be a unique string.
+         *
+         * The array value is the FQCN of the modules class which implements
+         * SclZfCartPayment\Entity\PaymentInterface.
+         */
+        'payment_methods' => array(
+            /*
+             * Example entry for the SclZfCartSagepay module.
+             */
+            //'sagepay' => 'SclZfCartSagepay\Sagepay',
+
+            /*
+             * Example entry for the SclZfCartPaypoint module.
+             */
+            //'paypoint' => 'SclZfCartPaypoint\Paypoint',
+        ),
+    )
+);
