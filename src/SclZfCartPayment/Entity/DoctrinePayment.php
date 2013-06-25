@@ -5,6 +5,7 @@ namespace SclZfCartPayment\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use SclZfCart\Entity\OrderInterface;
+use SclZfCartPayment\Exception\InvalidArgumentException;
 
 /**
  * Doctrine payment entity
@@ -14,7 +15,7 @@ use SclZfCart\Entity\OrderInterface;
  *
  * @author Tom Oram <tom@scl.co.uk>
  */
-class DoctrinePayment
+class DoctrinePayment implements PaymentInterface
 {
     /**
      * @var int
@@ -29,7 +30,7 @@ class DoctrinePayment
      * @ORM\Column(type="string")
      */
     protected $status;
-    
+
     /**
      * @var DoctrineOrderInterface
      * @ORM\ManyToOne(targetEntity="SclZfCart\Entity\DoctrineOrder")
@@ -126,6 +127,18 @@ class DoctrinePayment
      */
     public function setStatus($status)
     {
+        if (!in_array(
+            $status,
+            array(self::STATUS_PENDING, self::STATUS_FAILED, self::STATUS_SUCCESS)
+        )) {
+            throw new InvalidArgumentException(
+                sprintf('"%s", "%s" or "%s"', self::STATUS_PENDING, self::STATUS_FAILED, self::STATUS_SUCCESS),
+                $status,
+                __METHOD__,
+                __LINE__
+            );
+        }
+
         $this->status = (string) $status;
 
         return $this;
