@@ -28,7 +28,9 @@
     "autoload": {
         "psr-0": {
             "SclZfCartPayment\\": "src/"
-        }
+        },
+        "classmap": [
+            "./Module.php"
+        ]
     }
-
 }
