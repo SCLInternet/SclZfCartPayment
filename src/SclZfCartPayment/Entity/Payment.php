@@ -3,55 +3,43 @@
 namespace SclZfCartPayment\Entity;
 
 use DateTime;
-use Doctrine\ORM\Mapping as ORM;
 use SclZfCart\Entity\OrderInterface;
 use SclZfCartPayment\Exception\InvalidArgumentException;
 
 /**
- * Doctrine payment entity
- *
- * @ORM\Entity
- * @ORM\Table(name="cart_payment")
+ * Payment entity.
  *
  * @author Tom Oram <tom@scl.co.uk>
  */
-class DoctrinePayment implements PaymentInterface
+class Payment implements PaymentInterface
 {
     /**
      * @var int
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
     /**
      * @var string
-     * @ORM\Column(type="string")
      */
     protected $status;
 
     /**
      * @var DoctrineOrderInterface
-     * @ORM\ManyToOne(targetEntity="SclZfCart\Entity\DoctrineOrder")
      */
     protected $order;
 
     /**
      * @var DateTime
-     * @ORM\Column(type="date")
      */
     protected $date;
 
     /**
      * @var string
-     * @ORM\Column(type="string")
      */
     protected $type;
 
     /**
      * @var float
-     * @ORM\Column(type="decimal", precision=11, scale=2)
      */
     protected $amount;
 
