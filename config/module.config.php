@@ -32,14 +32,12 @@ return array(
         ),
     ),
 
+    // @todo Move to .dist config file
     'doctrine' => array(
         'driver' => array(
             __NAMESPACE__ . '_driver' => array(
-                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
-                'cache' => 'array',
-                'paths' => array(
-                    __DIR__ . '/../src/'. __NAMESPACE__ . '/Entity/',
-                ),
+                'class' => 'Doctrine\ORM\Mapping\Driver\XmlDriver',
+                'paths' => __DIR__ . '/xml/doctrine-entities'
             ),
             'orm_default' => array(
                 'drivers' => array(

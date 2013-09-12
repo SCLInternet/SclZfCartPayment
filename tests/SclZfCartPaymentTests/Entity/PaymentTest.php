@@ -2,19 +2,19 @@
 
 namespace SclZfCartPaymentTests\Entity;
 
-use SclZfCartPayment\Entity\DoctrinePayment;
+use SclZfCartPayment\Entity\Payment;
 
 /**
- * Unit tests from {@see DoctrinePayment}.
+ * Unit tests from {@see Payment}.
  *
  * @author Tom Oram <tom@scl.co.uk>
  */
-class DoctrinePaymentTest extends \PHPUnit_Framework_TestCase
+class PaymentTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * The instance to be tested.
      *
-     * @var DoctrinePayment
+     * @var Payment
      */
     protected $entity;
 
@@ -25,13 +25,13 @@ class DoctrinePaymentTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->entity = new DoctrinePayment();
+        $this->entity = new Payment();
     }
 
     /**
      * Test that the object is initialised properly.
      *
-     * @covers SclZfCartPayment\Entity\DoctrinePayment::__construct
+     * @covers SclZfCartPayment\Entity\Payment::__construct
      *
      * @return void
      */
@@ -40,7 +40,7 @@ class DoctrinePaymentTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(
             'SclZfCartPayment\Entity\PaymentInterface',
             $this->entity,
-            'DoctrinePayment must implement SclZfCartPayment\Entity\PaymentInterface'
+            'Payment must implement SclZfCartPayment\Entity\PaymentInterface'
         );
 
         $this->assertInstanceOf(
@@ -54,18 +54,18 @@ class DoctrinePaymentTest extends \PHPUnit_Framework_TestCase
      * testGettersAndSetters
      *
      * @dataProvider getSetProvider
-     * @covers       SclZfCartPayment\Entity\DoctrinePayment::getId
-     * @covers       SclZfCartPayment\Entity\DoctrinePayment::setId
-     * @covers       SclZfCartPayment\Entity\DoctrinePayment::getStatus
-     * @covers       SclZfCartPayment\Entity\DoctrinePayment::setStatus
-     * @covers       SclZfCartPayment\Entity\DoctrinePayment::getOrder
-     * @covers       SclZfCartPayment\Entity\DoctrinePayment::setOrder
-     * @covers       SclZfCartPayment\Entity\DoctrinePayment::getDate
-     * @covers       SclZfCartPayment\Entity\DoctrinePayment::setDate
-     * @covers       SclZfCartPayment\Entity\DoctrinePayment::getType
-     * @covers       SclZfCartPayment\Entity\DoctrinePayment::setType
-     * @covers       SclZfCartPayment\Entity\DoctrinePayment::getAmount
-     * @covers       SclZfCartPayment\Entity\DoctrinePayment::setAmount
+     * @covers       SclZfCartPayment\Entity\Payment::getId
+     * @covers       SclZfCartPayment\Entity\Payment::setId
+     * @covers       SclZfCartPayment\Entity\Payment::getStatus
+     * @covers       SclZfCartPayment\Entity\Payment::setStatus
+     * @covers       SclZfCartPayment\Entity\Payment::getOrder
+     * @covers       SclZfCartPayment\Entity\Payment::setOrder
+     * @covers       SclZfCartPayment\Entity\Payment::getDate
+     * @covers       SclZfCartPayment\Entity\Payment::setDate
+     * @covers       SclZfCartPayment\Entity\Payment::getType
+     * @covers       SclZfCartPayment\Entity\Payment::setType
+     * @covers       SclZfCartPayment\Entity\Payment::getAmount
+     * @covers       SclZfCartPayment\Entity\Payment::setAmount
      *
      * @param  string $member
      * @param  mixed  $value
@@ -110,7 +110,7 @@ class DoctrinePaymentTest extends \PHPUnit_Framework_TestCase
      * Test that setStatus() with an invalid status throws an exception.
      *
      * @expectedException SclZfCartPayment\Exception\InvalidArgumentException
-     * @covers            SclZfCartPayment\Entity\DoctrinePayment::setStatus
+     * @covers            SclZfCartPayment\Entity\Payment::setStatus
      *
      * @return void
      */

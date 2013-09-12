@@ -17,7 +17,7 @@ class DoctrinePaymentMapper extends GenericDoctrineMapper implements
         parent::__construct(
             $entityManager,
             $flushLock,
-            'SclZfCartPayment\Entity\DoctrinePayment'
+            'SclZfCartPayment\Entity\Payment'
         );
     }
 }
