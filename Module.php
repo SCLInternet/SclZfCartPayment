@@ -32,25 +32,10 @@ class Module implements
     public function onBootstrap(EventInterface $e)
     {
         $serviceLocator = $e->getApplication()->getServiceManager();
-        /* @var $cart \SclZfCart\Cart */
-        $cart = $serviceLocator->get('SclZfCart\Cart');
-        $eventManager = $cart->getEventManager();
 
-        $eventManager->attach(
-            CartEvent::EVENT_CHECKOUT,
-            function (CartEvent $event) use ($serviceLocator) {
-                return \SclZfCartPayment\Listener\CartListener::checkout($event, $serviceLocator);
-            },
-            self::CHECKOUT_EVENT_PRIORITY
-        );
+        $cartListener = $serviceLocator->get('SharedEventManager');
 
-        $eventManager->attach(
-            CartEvent::EVENT_PROCESS,
-            function (CartEvent $event) use ($serviceLocator) {
-                return \SclZfCartPayment\Listener\CartListener::process($event, $serviceLocator);
-            },
-            self::PROCESS_EVENT_PRIORITY
-        );
+        $eventManager->attachAggregate($cartListener);
     }
 
     /**
@@ -89,8 +74,9 @@ class Module implements
                 'SclZfCartPayment\Mapper\PaymentMapperInterface' => 'SclZfCartPayment\Mapper\DoctrinePaymentMapper',
             ),
             'invokables' => array(
-                'SclZfCartPayment\Form\PaymentMethods' => 'SclZfCartPayment\Form\PaymentMethods',
-                'SclZfCartPayment\Method\MethodLoader' => 'SclZfCartPayment\Method\MethodLoader',
+                'SclZfCartPayment\Form\PaymentMethods'   => 'SclZfCartPayment\Form\PaymentMethods',
+                'SclZfCartPayment\Method\MethodLoader'   => 'SclZfCartPayment\Method\MethodLoader',
+                'SclZfCartPayment\Listener\CartListener' => 'SclZfCartPayment\Listener\CartListener',
             ),
             'factories' => array(
                 'SclZfCartPayment\Method\ConfigFetcher'  => 'SclZfCartPayment\Service\ConfigFetcherFactory',

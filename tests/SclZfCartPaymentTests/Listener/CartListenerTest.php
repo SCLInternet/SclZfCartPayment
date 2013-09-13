@@ -24,6 +24,10 @@ class CartListenerTest extends \PHPUnit_Framework_TestCase
 
         $this->serviceLocator = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
 
+        $this->listener = new CartListener();
+
+        $this->listener->setServiceLocator($this->serviceLocator);
+
         $this->event = $this->getMock('SclZfCart\CartEvent');
     }
 
@@ -44,7 +48,7 @@ class CartListenerTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testCheckoutWithSelectedMethod()
+    public function test_checkout_with_selected_method()
     {
         $this->expectMethodSelector($this->any());
 
@@ -54,7 +58,7 @@ class CartListenerTest extends \PHPUnit_Framework_TestCase
              ->method('getSelectedMethod')
              ->will($this->returnValue($method));
 
-        $result = CartListener::checkout($this->event, $this->serviceLocator);
+        $result = $this->listener->checkout($this->event, $this->serviceLocator);
 
         $this->assertNull($result);
     }
@@ -68,7 +72,7 @@ class CartListenerTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testCheckoutWithoutSelectedMethod()
+    public function test_checkout_without_selected_method()
     {
         $this->expectMethodSelector($this->any());
 
@@ -81,7 +85,7 @@ class CartListenerTest extends \PHPUnit_Framework_TestCase
              ->method('stopPropagation')
              ->with($this->equalTo(true));
 
-        $result = CartListener::checkout($this->event, $this->serviceLocator);
+        $result = $this->listener->checkout($this->event, $this->serviceLocator);
 
         $this->assertInstanceOf('SclZfUtilities\Model\Route', $result);
         $this->assertEquals('payment/select-payment', $result->route);
@@ -96,14 +100,14 @@ class CartListenerTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testProcessWithBadOrder()
+    public function test_process_with_bad_order()
     {
         $this->event
              ->expects($this->any())
              ->method('getTarget')
              ->will($this->returnValue(7));
 
-        CartListener::process($this->event, $this->serviceLocator);
+        $this->listener->process($this->event, $this->serviceLocator);
     }
 
     /**
@@ -115,7 +119,7 @@ class CartListenerTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testProcessWithNoPaymentMethod()
+    public function test_process_with_no_payment_method()
     {
         $order = $this->getMock('SclZfCart\Entity\OrderInterface');
 
@@ -131,14 +135,14 @@ class CartListenerTest extends \PHPUnit_Framework_TestCase
              ->method('getSelectedMethod')
              ->will($this->returnValue('x'));
 
-        CartListener::process($this->event, $this->serviceLocator);
+        $this->listener->process($this->event, $this->serviceLocator);
     }
 
     /**
      * @covers SclZfCartPayment\Listener\CartListener::process
      * @covers SclZfCartPayment\Listener\CartListener::createRedirectForm
      */
-    public function testProcess()
+    public function test_process()
     {
         $order   = $this->getMock('SclZfCart\Entity\OrderInterface');
         $method  = $this->getMock('SclZfCartPayment\PaymentMethodInterface');
@@ -175,6 +179,6 @@ class CartListenerTest extends \PHPUnit_Framework_TestCase
                // @todo check params
                //->with($this->equalTo($form), $this->equalTo($order));
 
-        CartListener::process($this->event, $this->serviceLocator);
+        $this->listener->process($this->event, $this->serviceLocator);
     }
 }
