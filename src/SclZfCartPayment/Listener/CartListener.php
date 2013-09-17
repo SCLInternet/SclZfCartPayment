@@ -43,14 +43,14 @@ class CartListener implements
             'SclZfCart\Cart',
             CartEvent::EVENT_CHECKOUT,
             array($this, 'checkout'),
-            $this->CHECKOUT_PRIORITY
+            self::CHECKOUT_PRIORITY
         );
 
         $this->listeners[] = $events->attach(
             'SclZfCart\Cart',
             CartEvent::EVENT_PROCESS,
             array($this, 'process'),
-            $this->PROCESS_PRIORITY
+            self::PROCESS_PRIORITY
         );
     }
 
