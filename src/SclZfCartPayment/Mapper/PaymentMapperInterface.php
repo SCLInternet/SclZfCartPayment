@@ -2,7 +2,7 @@
 
 namespace SclZfCartPayment\Mapper;
 
-use SclZfUtilities\Mapper\GenericMapperInterface;
+use SclZfGenericMapper\MapperInterface as GenericMapperInterface;
 
 /**
  * Interface for the a Payment entity mapper.

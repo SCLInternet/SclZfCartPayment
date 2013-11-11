@@ -86,7 +86,7 @@ class Module implements
                 'SclZfCartPayment\Mapper\DoctrinePaymentMapper' => function ($sm) {
                     return new \SclZfCartPayment\Mapper\DoctrinePaymentMapper(
                         $sm->get('doctrine.entitymanager.orm_default'),
-                        $sm->get('SclZfUtilities\Doctrine\FlushLock')
+                        $sm->get('SclZfGenericMapper\Doctrine\FlushLock')
                     );
                 },
             ),
