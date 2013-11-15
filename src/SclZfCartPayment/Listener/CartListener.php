@@ -148,11 +148,9 @@ class CartListener implements
         if (!$order instanceof OrderInterface) {
             throw new RuntimeException(
                 sprintf(
-                    'Instance of %sexpected; got "%s" in %s on line %d.',
+                    'Instance of %sexpected; got "%s".',
                     '\SclZfCart\Entity\OrderInterface',
-                    is_object($order) ? get_class($order) : gettype($order),
-                    __FILE__,
-                    __LINE__
+                    is_object($order) ? get_class($order) : gettype($order)
                 )
             );
         }
@@ -162,11 +160,9 @@ class CartListener implements
         if (!$method instanceof PaymentMethodInterface) {
             throw new RuntimeException(
                 sprintf(
-                    'Instance of %sexpected; got "%s" in %s on line %d.',
+                    'Instance of %sexpected; got "%s".',
                     '\SclZfCartPayment\PaymentMethodInterface',
-                    is_object($order) ? get_class($order) : gettype($order),
-                    __FILE__,
-                    __LINE__
+                    is_object($method) ? get_class($method) : gettype($method)
                 )
             );
         }
