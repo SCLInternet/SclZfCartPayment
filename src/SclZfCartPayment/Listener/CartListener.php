@@ -1,40 +1,47 @@
 <?php
 namespace SclZfCartPayment\Listener;
 
-use SclZfCart\CartEvent;
-use SclZfCart\Entity\OrderInterface;
 use SclZfCartPayment\Entity\PaymentInterface;
 use SclZfCartPayment\Exception\RuntimeException;
+use SclZfCartPayment\Mapper\PaymentMapperInterface;
 use SclZfCartPayment\Method\MethodSelectorInterface;
 use SclZfCartPayment\PaymentMethodInterface;
+use SclZfCart\CartEvent;
+use SclZfCart\Entity\OrderInterface;
 use SclZfUtilities\Model\Route;
-use Zend\Form\Form;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorAwareTrait;
-use Zend\EventManager\SharedListenerAggregateInterface;
 use Zend\EventManager\SharedEventManagerInterface;
+use Zend\EventManager\SharedListenerAggregateInterface;
+use Zend\Form\Form;
 
 /**
  * Provides the methods which are attach to the cart's event manager.
  *
  * @author Tom Oram <tom@scl.co.uk>
  */
-class CartListener implements
-    SharedListenerAggregateInterface,
-    ServiceLocatorAwareInterface
+class CartListener implements SharedListenerAggregateInterface
 {
-    use ServiceLocatorAwareTrait;
-
     const CHECKOUT_PRIORITY = 100;
     const PROCESS_PRIORITY  = 100;
 
-    protected $listeners = array();
+    private $listeners = array();
+
+    private $methodSelector;
+
+    private $paymentMapper;
+
+    public function __construct(
+        MethodSelectorInterface $methodSelector,
+        PaymentMapperInterface $paymentMapper
+    ) {
+        $this->methodSelector = $methodSelector;
+        $this->paymentMapper  = $paymentMapper;
+    }
 
     /**
      * Attach the listener functions to the event manager.
      *
      * @param  SharedEventManagerInterface $events
+     *
      * @return void
      */
     public function attachShared(SharedEventManagerInterface $events)
@@ -110,6 +117,64 @@ class CartListener implements
     }
 
     /**
+     * Adjusts the complete checkout button to redirect to the payment page.
+     *
+     * @param  CartEvent               $event
+     * @return Form
+     * @throws RuntimeException        When the event target isn't an instanceof OrderInterface
+     * @throws RuntimeException        When the a payment method is not selected
+     */
+    public function process(CartEvent $event)
+    {
+        /* @var $order \SclZfCart\Entity\OrderInterface */
+        $order = $event->getTarget();
+
+        if (!$order instanceof OrderInterface) {
+            throw RuntimeException::invalidObjectType(
+                '\SclZfCart\Entity\OrderInterface',
+                $order
+            );
+        }
+
+        $method = $this->getMethodSelector()->getSelectedMethod();
+
+        if (!$method instanceof PaymentMethodInterface) {
+            throw RuntimeException::invalidObjectType(
+                '\SclZfCartPayment\PaymentMethodInterface',
+                $method
+            );
+        }
+
+        $event->stopPropagation(true);
+
+        $payment = $this->paymentMapper->create();
+
+        $payment->setTransactionId($method->generateTransactionId());
+
+        $payment->setDate(new \DateTime());
+        $payment->setOrder($order);
+        $payment->setStatus(PaymentInterface::STATUS_PENDING);
+        $payment->setType(get_class($method));
+        $payment->setAmount($order->getTotal());
+
+        $this->paymentMapper->save($payment);
+
+        $form = $this->createRedirectForm();
+
+        $method->updateCompleteForm($form, $order, $payment);
+
+        return $form;
+    }
+
+    /**
+     * @return MethodSelectorInterface
+     */
+    protected function getMethodSelector()
+    {
+        return $this->methodSelector;
+    }
+
+    /**
      * Creates a form to redirect to the payment page.
      *
      * @return Form
@@ -130,69 +195,5 @@ class CartListener implements
         );
 
         return $form;
-    }
-
-    /**
-     * Adjusts the complete checkout button to redirect to the payment page.
-     *
-     * @param  CartEvent               $event
-     * @return Form
-     * @throws RuntimeException        When the event target isn't an instanceof OrderInterface
-     * @throws RuntimeException        When the a payment method is not selected
-     */
-    public function process(CartEvent $event)
-    {
-        /* @var $order \SclZfCart\Entity\OrderInterface */
-        $order = $event->getTarget();
-
-        if (!$order instanceof OrderInterface) {
-            throw new RuntimeException(
-                sprintf(
-                    'Instance of %sexpected; got "%s".',
-                    '\SclZfCart\Entity\OrderInterface',
-                    is_object($order) ? get_class($order) : gettype($order)
-                )
-            );
-        }
-
-        $method = $this->getMethodSelector()->getSelectedMethod();
-
-        if (!$method instanceof PaymentMethodInterface) {
-            throw new RuntimeException(
-                sprintf(
-                    'Instance of %sexpected; got "%s".',
-                    '\SclZfCartPayment\PaymentMethodInterface',
-                    is_object($method) ? get_class($method) : gettype($method)
-                )
-            );
-        }
-
-        $event->stopPropagation(true);
-
-        $mapper = $this->serviceLocator->get('SclZfCartPayment\Mapper\PaymentMapperInterface');
-
-        $payment = $mapper->create();
-        $payment->setDate(new \DateTime());
-        $payment->setOrder($order);
-        $payment->setStatus(PaymentInterface::STATUS_PENDING);
-        $payment->setType(get_class($method));
-        // @todo FIXME
-        $payment->setAmount(0);
-
-        $mapper->save($payment);
-
-        $form = $this->createRedirectForm();
-
-        $method->updateCompleteForm($form, $order, $payment);
-
-        return $form;
-    }
-
-    /**
-     * @return MethodSelectorInterface
-     */
-    protected function getMethodSelector()
-    {
-        return $this->serviceLocator->get('SclZfCartPayment\Method\MethodSelectorInterface');
     }
 }

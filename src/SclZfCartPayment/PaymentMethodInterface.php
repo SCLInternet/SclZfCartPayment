@@ -21,6 +21,13 @@ interface PaymentMethodInterface
     public function name();
 
     /**
+     * Returns the transaction ID to be used for the payment.
+     *
+     * @return string
+     */
+    public function generateTransactionId();
+
+    /**
      * The payment method may update the confirm form.
      *
      * @param  Form             $form

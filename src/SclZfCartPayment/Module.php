@@ -78,7 +78,6 @@ class Module implements
             'invokables' => array(
                 'SclZfCartPayment\Form\PaymentMethods'   => 'SclZfCartPayment\Form\PaymentMethods',
                 'SclZfCartPayment\Method\MethodLoader'   => 'SclZfCartPayment\Method\MethodLoader',
-                'SclZfCartPayment\Listener\CartListener' => 'SclZfCartPayment\Listener\CartListener',
             ),
             'factories' => array(
                 'SclZfCartPayment\Method\ConfigFetcher'  => 'SclZfCartPayment\Service\ConfigFetcherFactory',
@@ -87,6 +86,12 @@ class Module implements
                     return new \SclZfCartPayment\Mapper\DoctrinePaymentMapper(
                         $sm->get('doctrine.entitymanager.orm_default'),
                         $sm->get('SclZfGenericMapper\Doctrine\FlushLock')
+                    );
+                },
+                'SclZfCartPayment\Listener\CartListener' => function ($sm) {
+                    return new \SclZfCartPayment\Listener\CartListener(
+                        $sm->get('SclZfCartPayment\Method\MethodSelectorInterface'),
+                        $sm->get('SclZfCartPayment\Mapper\PaymentMapperInterface')
                     );
                 },
             ),
