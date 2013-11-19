@@ -2,7 +2,7 @@
 
 namespace SclZfCartPayment\Method;
 
-use SclZfCartPayment\Exception\InvalidArgumentException;
+use SclZfCartPayment\Exception\RuntimeException;
 use SclZfCartPayment\PaymentMethodInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -43,7 +43,7 @@ class MethodLoader implements
 
     /**
      * Returns a instance of a payment method object by name.
-     * 
+     *
      * @param string $methodName
      * @return PaymentMethodInterface
      * @throws InvalidArgumentException
@@ -53,11 +53,9 @@ class MethodLoader implements
         $method = $this->getServiceLocator()->get($methodName);
 
         if (!$method instanceof PaymentMethodInterface) {
-            throw new InvalidArgumentException(
+            throw RuntimeException::invalidObjectType(
                 'SclZfCartPayment\PaymentMethodInterface',
-                $method,
-                __METHOD__,
-                __LINE__
+                $method
             );
         }
 

@@ -32,11 +32,7 @@ class MethodLoaderTest extends \PHPUnit_Framework_TestCase
         $this->object->setServiceLocator($this->serviceLocator);
     }
 
-    /**
-     * @covers SclZfCartPayment\Method\MethodLoader::getServiceLocator
-     * @covers SclZfCartPayment\Method\MethodLoader::setServiceLocator
-     */
-    public function testServiceLocatorAwareInterface()
+    public function test_ServiceLocatorAwareInterface()
     {
         $newServiceLocator = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
         $this->object->setServiceLocator($newServiceLocator);
@@ -44,10 +40,7 @@ class MethodLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($newServiceLocator, $this->object->getServiceLocator());
     }
 
-    /**
-     * @covers SclZfCartPayment\Method\MethodLoader::getMethod
-     */
-    public function testGetMethodWithGoodResult()
+    public function test_getMethod_with_good_result()
     {
         $methodName = 'TestMethod';
 
@@ -63,20 +56,19 @@ class MethodLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($mockedMethod, $result);
     }
 
-    /**
-     * @covers SclZfCartPayment\Method\MethodLoader::getMethod
-     * @expectedException SclZfCartPayment\Exception\InvalidArgumentException
-     */
-    public function testGetMethodWithBadResult()
+    public function test_getMethod_with_bad_result()
     {
         $methodName = 'TestMethod';
-
-        $mockedMethod = 'SomethingWrong';
 
         $this->serviceLocator->expects($this->once())
             ->method('get')
             ->with($this->equalTo($methodName))
-            ->will($this->returnValue($mockedMethod));
+            ->will($this->returnValue('SomethingWrong'));
+
+        $this->setExpectedException(
+            'SclZfCartPayment\Exception\RuntimeException',
+            'Expected instance of "SclZfCartPayment\PaymentMethodInterface"; got "string".'
+        );
 
         $result = $this->object->getMethod($methodName);
     }

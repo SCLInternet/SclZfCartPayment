@@ -31,8 +31,6 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
     /**
      * Test that the object is initialised properly.
      *
-     * @covers SclZfCartPayment\Entity\Payment::__construct
-     *
      * @return void
      */
     public function testInitialisation()
@@ -54,18 +52,6 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
      * testGettersAndSetters
      *
      * @dataProvider getSetProvider
-     * @covers       SclZfCartPayment\Entity\Payment::getId
-     * @covers       SclZfCartPayment\Entity\Payment::setId
-     * @covers       SclZfCartPayment\Entity\Payment::getStatus
-     * @covers       SclZfCartPayment\Entity\Payment::setStatus
-     * @covers       SclZfCartPayment\Entity\Payment::getOrder
-     * @covers       SclZfCartPayment\Entity\Payment::setOrder
-     * @covers       SclZfCartPayment\Entity\Payment::getDate
-     * @covers       SclZfCartPayment\Entity\Payment::setDate
-     * @covers       SclZfCartPayment\Entity\Payment::getType
-     * @covers       SclZfCartPayment\Entity\Payment::setType
-     * @covers       SclZfCartPayment\Entity\Payment::getAmount
-     * @covers       SclZfCartPayment\Entity\Payment::setAmount
      *
      * @param  string $member
      * @param  mixed  $value
@@ -77,8 +63,6 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
         $setter = 'set' . $member;
 
         $result = $this->entity->$setter($value);
-
-        $this->assertEquals($this->entity, $result, $setter . '() did not return self.');
 
         $this->assertEquals(
             $value,
@@ -106,16 +90,13 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * Test that setStatus() with an invalid status throws an exception.
-     *
-     * @expectedException SclZfCartPayment\Exception\InvalidArgumentException
-     * @covers            SclZfCartPayment\Entity\Payment::setStatus
-     *
-     * @return void
-     */
-    public function testSetStatusWithBadStatus()
+    public function test_setStatus_throws_for_bad_status()
     {
-        $this->entity->setStatus('wrong');
+        $this->setExpectedException(
+            'SclZfCartPayment\Exception\InvalidArgumentException',
+            'Expected one of "pending|failed|success"; got "bad-status".'
+        );
+
+        $this->entity->setStatus('bad-status');
     }
 }

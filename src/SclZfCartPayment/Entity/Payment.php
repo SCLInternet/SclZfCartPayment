@@ -16,32 +16,48 @@ class Payment implements PaymentInterface
     /**
      * @var int
      */
-    protected $id;
+    private $id;
+
+    /**
+     * A user/gateway defined transaction ID.
+     *
+     * @var string
+     */
+    private $transactionId;
 
     /**
      * @var string
      */
-    protected $status;
+    private $status;
 
     /**
      * @var DoctrineOrderInterface
      */
-    protected $order;
+    private $order;
 
     /**
      * @var DateTime
      */
-    protected $date;
+    private $date;
 
     /**
      * @var string
      */
-    protected $type;
+    private $type;
 
     /**
      * @var float
      */
-    protected $amount;
+    private $amount;
+
+    /**
+     * List of allowed states.
+     */
+    private static $validStates = [
+        self::STATUS_PENDING,
+        self::STATUS_FAILED,
+        self::STATUS_SUCCESS
+    ];
 
     /**
      * Constructor
@@ -65,13 +81,30 @@ class Payment implements PaymentInterface
      * {@inheritDoc}
      *
      * @param  int $id
-     * @return self
      */
     public function setId($id)
     {
         $this->id = (int) $id;
+    }
 
-        return $this;
+    /**
+     * Gets the value of transactionId.
+     *
+     * @return string
+     */
+    public function getTransactionId()
+    {
+        return $this->transactionId;
+    }
+
+    /**
+     * Sets the value of transactionId.
+     *
+     * @param  string $transactionId
+     */
+    public function setTransactionId($transactionId)
+    {
+        $this->transactionId = (string) $transactionId;
     }
 
     /**
@@ -88,13 +121,10 @@ class Payment implements PaymentInterface
      * {@inheritDoc}
      *
      * @param  OrderInterface $order
-     * @return self
      */
     public function setOrder(OrderInterface $order)
     {
         $this->order = $order;
-
-        return $this;
     }
 
     /**
@@ -111,25 +141,14 @@ class Payment implements PaymentInterface
      * {@inheritDoc}
      *
      * @param  string $status
-     * @return self
      */
     public function setStatus($status)
     {
-        if (!in_array(
-            $status,
-            array(self::STATUS_PENDING, self::STATUS_FAILED, self::STATUS_SUCCESS)
-        )) {
-            throw new InvalidArgumentException(
-                sprintf('"%s", "%s" or "%s"', self::STATUS_PENDING, self::STATUS_FAILED, self::STATUS_SUCCESS),
-                $status,
-                __METHOD__,
-                __LINE__
-            );
+        if (!in_array($status, self::$validStates)) {
+            throw InvalidArgumentException::invalidValue(self::$validStates, $status);
         }
 
         $this->status = (string) $status;
-
-        return $this;
     }
 
     /**
@@ -146,13 +165,10 @@ class Payment implements PaymentInterface
      * Set the date the payment was made.
      *
      * @param  DateTime $date
-     * @return self
      */
     public function setDate(DateTime $date)
     {
         $this->date = $date;
-
-        return $this;
     }
 
     /**
@@ -169,13 +185,10 @@ class Payment implements PaymentInterface
      * Set the type of transaction.
      *
      * @param  string $type
-     * @return self
      */
     public function setType($type)
     {
         $this->type = $type;
-
-        return $this;
     }
 
     /**
@@ -192,12 +205,9 @@ class Payment implements PaymentInterface
      * Set the amount the payment was for.
      *
      * @param  float $amount
-     * @return self
      */
     public function setAmount($amount)
     {
         $this->amount = $amount;
-
-        return $this;
     }
 }

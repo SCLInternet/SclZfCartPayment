@@ -9,6 +9,7 @@
             <generator strategy="AUTO" />
         </id>
 
+        <field name="transactionId" type="string" />
         <field name="status" type="string" />
         <many-to-one field="order" target-entity="SclZfCart\Entity\Order" />
         <field name="date" type="datetime" />

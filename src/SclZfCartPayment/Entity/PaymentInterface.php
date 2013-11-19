@@ -27,9 +27,22 @@ interface PaymentInterface
      * Set the payment ID.
      *
      * @param  int $id
-     * @return self
      */
     public function setId($id);
+
+    /**
+     * Get the user/gateway defined transaction ID.
+     *
+     * @return string
+     */
+    public function getTransactionId();
+
+    /**
+     * Set the user/gateway defined transaction ID.
+     *
+     * @param  string $id
+     */
+    public function setTransactionId($id);
 
     /**
      * Return the order this payment was for.
@@ -42,7 +55,6 @@ interface PaymentInterface
      * Set the order this payment is for.
      *
      * @param  OrderInterface $order
-     * @return self
      */
     public function setOrder(OrderInterface $order);
 
@@ -57,7 +69,6 @@ interface PaymentInterface
      * Sets the status fo the payment.
      *
      * @param  string $status
-     * @return self
      */
     public function setStatus($status);
 
@@ -72,7 +83,6 @@ interface PaymentInterface
      * Set the date the payment was made.
      *
      * @param  DateTime $date
-     * @return self
      */
     public function setDate(DateTime $date);
 
@@ -87,7 +97,6 @@ interface PaymentInterface
      * Set the type of transaction.
      *
      * @param  string $type
-     * @return self
      */
     public function setType($type);
 
@@ -102,7 +111,6 @@ interface PaymentInterface
      * Set the amount the payment was for.
      *
      * @param  float $amount
-     * @return self
      */
     public function setAmount($amount);
 }
