@@ -2,17 +2,28 @@
 
 namespace SclZfCartPaymentTests\Service;
 
+use SclZfCartPayment\Entity\Payment;
+use SclZfCartPayment\Service\PaymentService;
 use SclZfCartPayment\Entity\PaymentInterface;
-use SclZfCartPayment\Service\CompletionService;
 
-class CompletionServiceTest extends \PHPUnit_Framework_TestCase
+/**
+ * Unit tests for {@see PaymentService}.
+ *
+ * @author Tom Oram <tom@scl.co.uk>
+ */
+class PaymentServiceTest extends \PHPUnit_Framework_TestCase
 {
-    protected $service;
+    private $service;
 
-    protected $orderService;
+    private $orderService;
 
-    protected $paymentMapper;
+    private $paymentMapper;
 
+    /**
+     * Set up the instance to be tested.
+     *
+     * @return void
+     */
     protected function setUp()
     {
         $this->orderService = $this->getMockBuilder('SclZfCart\Service\OrderCompletionService')
@@ -21,18 +32,48 @@ class CompletionServiceTest extends \PHPUnit_Framework_TestCase
 
         $this->paymentMapper = $this->getMock('SclZfCartPayment\Mapper\PaymentMapperInterface');
 
-        $this->service = new CompletionService($this->paymentMapper, $this->orderService);
+        $this->service = new PaymentService(
+            $this->paymentMapper,
+            $this->orderService
+        );
     }
 
-    /**
-     * Test the complete method.
-     *
-     * @covers SclZfCartPayment\Service\CompletionService::complete
-     * @covers SclZfCartPayment\Service\CompletionService::__construct
-     *
-     * @return void
+    /*
+     * isComplete()
      */
-    public function testComplete()
+
+    public function test_isComplete_returns_false_for_pending_payment()
+    {
+        $payment = new Payment();
+
+        $payment->setStatus(Payment::STATUS_PENDING);
+
+        $this->assertFalse($this->service->isComplete($payment));
+    }
+
+    public function test_isComplete_returns_true_for_success_payment()
+    {
+        $payment = new Payment();
+
+        $payment->setStatus(Payment::STATUS_SUCCESS);
+
+        $this->assertTrue($this->service->isComplete($payment));
+    }
+
+    public function test_isComplete_returns_true_for_failed_payment()
+    {
+        $payment = new Payment();
+
+        $payment->setStatus(Payment::STATUS_FAILED);
+
+        $this->assertTrue($this->service->isComplete($payment));
+    }
+
+    /*
+     * complete()
+     */
+
+    public function test_complete()
     {
         $payment = $this->getMock('SclZfCartPayment\Entity\PaymentInterface');
 
@@ -59,15 +100,11 @@ class CompletionServiceTest extends \PHPUnit_Framework_TestCase
         $this->service->complete($payment);
     }
 
-    /**
-     * Test the fail method.
-     *
-     * @covers SclZfCartPayment\Service\CompletionService::fail
-     * @covers SclZfCartPayment\Service\CompletionService::__construct
-     *
-     * @return void
+    /*
+     * fail()
      */
-    public function testFail()
+
+    public function test_fail()
     {
         $payment = $this->getMock('SclZfCartPayment\Entity\PaymentInterface');
 
@@ -92,5 +129,19 @@ class CompletionServiceTest extends \PHPUnit_Framework_TestCase
              ->with($this->equalTo($order));
 
         $this->service->fail($payment);
+    }
+
+    /*
+     * Service manager tests
+     */
+
+    public function test_service_manager_create_instance()
+    {
+        $this->assertInstanceOf(
+            'SclZfCartPayment\Service\PaymentService',
+            \TestBootstrap::getApplication()
+                          ->getServiceManager()
+                          ->get('SclZfCartPayment\Service\PaymentService')
+        );
     }
 }

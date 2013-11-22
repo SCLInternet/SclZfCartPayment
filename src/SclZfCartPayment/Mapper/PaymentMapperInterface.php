@@ -11,4 +11,12 @@ use SclZfGenericMapper\MapperInterface as GenericMapperInterface;
  */
 interface PaymentMapperInterface extends GenericMapperInterface
 {
+    /**
+     * Find a payment entity by the transaction ID.
+     *
+     * @param  string $id
+     *
+     * @return PaymentInterface
+     */
+    public function findByTransactionId($id);
 }

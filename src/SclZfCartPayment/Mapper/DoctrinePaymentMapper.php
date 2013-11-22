@@ -21,6 +21,13 @@ class DoctrinePaymentMapper extends DoctrineMapper implements
         );
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param  string $id
+     *
+     * @return Payment
+     */
     public function findByTransactionId($id)
     {
         return $this->singleEntity($this->findBy(['transactionId' => $id]));

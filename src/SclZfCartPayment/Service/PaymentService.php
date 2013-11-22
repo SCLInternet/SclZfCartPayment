@@ -6,29 +6,25 @@ use SclZfCartPayment\Entity\PaymentInterface;
 use SclZfCartPayment\Mapper\PaymentMapperInterface;
 use SclZfCart\Service\OrderCompletionService;
 
-/**
- * Marks a payment as completed.
- *
- * @author Tom Oram <tom@scl.co.uk>
- */
-class CompletionService
+class PaymentService
 {
     /**
      * The mapper for saving a payment.
      *
      * @var PaymentMapperInterface
      */
-    protected $mapper;
-    
+    private $mapper;
+
     /**
      * The order completion service.
      *
      * @var OrderCompletionService
      */
-    protected $orderService;
+    private $orderService;
 
     /**
-     * 
+     * Set collaborator objects.
+     *
      * @param  PaymentMapperInterface $mapper
      * @param  OrderCompletionService $orderService
      */
@@ -38,6 +34,19 @@ class CompletionService
     ) {
         $this->mapper = $mapper;
         $this->orderService = $orderService;
+    }
+
+    /**
+     * Check if a payment has completed.
+     *
+     * @param  string $transactionId
+     *
+     * @return bool
+     */
+    public function isComplete(PaymentInterface $payment)
+    {
+        return PaymentInterface::STATUS_SUCCESS === $payment->getStatus()
+            || PaymentInterface::STATUS_FAILED === $payment->getStatus();
     }
 
     /**
@@ -52,8 +61,7 @@ class CompletionService
 
         $this->mapper->save($payment);
 
-        $order = $payment->getOrder();
-        $this->orderService->complete($order);
+        $this->orderService->complete($payment->getOrder());
     }
 
     /**
@@ -68,7 +76,6 @@ class CompletionService
 
         $this->mapper->save($payment);
 
-        $order = $payment->getOrder();
-        $this->orderService->fail($order);
+        $this->orderService->fail($payment->getOrder());
     }
 }

@@ -94,6 +94,12 @@ class Module implements
                         $sm->get('SclZfCartPayment\Mapper\PaymentMapperInterface')
                     );
                 },
+                'SclZfCartPayment\Service\PaymentService' => function ($sm) {
+                    return new \SclZfCartPayment\Service\PaymentService(
+                        $sm->get('SclZfCartPayment\Mapper\PaymentMapperInterface'),
+                        $sm->get('SclZfCart\Service\OrderCompletionService')
+                    );
+                },
             ),
         );
     }
