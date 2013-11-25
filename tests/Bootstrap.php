@@ -18,6 +18,7 @@ class TestBootstrap
     {
         $loader = self::getAutoloader();
 
+        $loader->add('SclZfCartTests\\', __DIR__ . '/../vendor/sclinternet/scl-zf-cart/tests');
         $loader->add('SclZfCartPaymentTests\\', __DIR__);
 
         self::$application = \Zend\Mvc\Application::init($config);
