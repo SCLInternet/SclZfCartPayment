@@ -28,7 +28,7 @@ class ConfigFetcher implements MethodFetcherInterface
     private $methods = null;
 
     /**
-     * 
+     *
      * @var MethodLoaderInterface
      */
     private $loader;
