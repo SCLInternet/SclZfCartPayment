@@ -3,16 +3,15 @@
 namespace SclZfCartPayment\Entity;
 
 use DateTime;
-use SclZfCart\Entity\OrderInterface;
+use SclZfCart\Entity\Order;
 use SclZfCartPayment\Exception\InvalidArgumentException;
 
-/**
- * Payment entity.
- *
- * @author Tom Oram <tom@scl.co.uk>
- */
-class Payment implements PaymentInterface
+class Payment
 {
+    const STATUS_PENDING = 'pending';
+    const STATUS_FAILED  = 'failed';
+    const STATUS_SUCCESS = 'success';
+
     /**
      * @var int
      */
@@ -31,7 +30,7 @@ class Payment implements PaymentInterface
     private $status;
 
     /**
-     * @var DoctrineOrderInterface
+     * @var DoctrineOrder
      */
     private $order;
 
@@ -68,8 +67,6 @@ class Payment implements PaymentInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @return int
      */
     public function getId()
@@ -78,8 +75,6 @@ class Payment implements PaymentInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param  int $id
      */
     public function setId($id)
@@ -88,8 +83,6 @@ class Payment implements PaymentInterface
     }
 
     /**
-     * Gets the value of transactionId.
-     *
      * @return string
      */
     public function getTransactionId()
@@ -98,9 +91,7 @@ class Payment implements PaymentInterface
     }
 
     /**
-     * Sets the value of transactionId.
-     *
-     * @param  string $transactionId
+     * @param string $transactionId
      */
     public function setTransactionId($transactionId)
     {
@@ -108,9 +99,7 @@ class Payment implements PaymentInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @return OrderInterface
+     * @return Order
      */
     public function getOrder()
     {
@@ -118,18 +107,14 @@ class Payment implements PaymentInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @param  OrderInterface $order
+     * @param Order $order
      */
-    public function setOrder(OrderInterface $order)
+    public function setOrder(Order $order)
     {
         $this->order = $order;
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @return string
      */
     public function getStatus()
@@ -138,9 +123,7 @@ class Payment implements PaymentInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @param  string $status
+     * @param string $status
      */
     public function setStatus($status)
     {
@@ -151,29 +134,17 @@ class Payment implements PaymentInterface
         $this->status = (string) $status;
     }
 
-    /**
-     * Get the date the payment was made.
-     *
-     * @return DateTime
-     */
     public function getDate()
     {
         return $this->date;
     }
 
-    /**
-     * Set the date the payment was made.
-     *
-     * @param  DateTime $date
-     */
     public function setDate(DateTime $date)
     {
         $this->date = $date;
     }
 
     /**
-     * Get the type of transaction.
-     *
      * @return string
      */
     public function getType()
@@ -182,9 +153,7 @@ class Payment implements PaymentInterface
     }
 
     /**
-     * Set the type of transaction.
-     *
-     * @param  string $type
+     * @param string $type
      */
     public function setType($type)
     {
@@ -192,8 +161,6 @@ class Payment implements PaymentInterface
     }
 
     /**
-     * Get the amount the payment was for.
-     *
      * @return float
      */
     public function getAmount()
@@ -202,9 +169,7 @@ class Payment implements PaymentInterface
     }
 
     /**
-     * Set the amount the payment was for.
-     *
-     * @param  float $amount
+     * @param float $amount
      */
     public function setAmount($amount)
     {

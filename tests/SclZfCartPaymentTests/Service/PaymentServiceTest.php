@@ -4,13 +4,7 @@ namespace SclZfCartPaymentTests\Service;
 
 use SclZfCartPayment\Entity\Payment;
 use SclZfCartPayment\Service\PaymentService;
-use SclZfCartPayment\Entity\PaymentInterface;
 
-/**
- * Unit tests for {@see PaymentService}.
- *
- * @author Tom Oram <tom@scl.co.uk>
- */
 class PaymentServiceTest extends \PHPUnit_Framework_TestCase
 {
     private $service;
@@ -75,18 +69,18 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
 
     public function test_complete()
     {
-        $payment = $this->getMock('SclZfCartPayment\Entity\PaymentInterface');
+        $payment = $this->getMock('SclZfCartPayment\Entity\Payment');
 
         $payment->expects($this->once())
                 ->method('setStatus')
-                ->with($this->equalTo(PaymentInterface::STATUS_SUCCESS));
+                ->with($this->equalTo(Payment::STATUS_SUCCESS));
 
         $this->paymentMapper
              ->expects($this->atLeastOnce())
              ->method('save')
              ->with($this->equalTo($payment));
 
-        $order = $this->getMock('SclZfCart\Entity\OrderInterface');
+        $order = $this->getMock('SclZfCart\Entity\Order');
 
         $payment->expects($this->any())
                 ->method('getOrder')
@@ -106,18 +100,18 @@ class PaymentServiceTest extends \PHPUnit_Framework_TestCase
 
     public function test_fail()
     {
-        $payment = $this->getMock('SclZfCartPayment\Entity\PaymentInterface');
+        $payment = $this->getMock('SclZfCartPayment\Entity\Payment');
 
         $payment->expects($this->once())
                 ->method('setStatus')
-                ->with($this->equalTo(PaymentInterface::STATUS_FAILED));
+                ->with($this->equalTo(Payment::STATUS_FAILED));
 
         $this->paymentMapper
              ->expects($this->atLeastOnce())
              ->method('save')
              ->with($this->equalTo($payment));
 
-        $order = $this->getMock('SclZfCart\Entity\OrderInterface');
+        $order = $this->getMock('SclZfCart\Entity\Order');
 
         $payment->expects($this->any())
                 ->method('getOrder')

@@ -5,6 +5,7 @@ return array(
         'ZfcUser',
         'DoctrineModule',
         'DoctrineORMModule',
+        'SCL\ZF2\Currency',
         'SclZfUtilities',
         'SclZfGenericMapper',
         'SclZfCart',

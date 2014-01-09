@@ -36,9 +36,9 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
     public function testInitialisation()
     {
         $this->assertInstanceOf(
-            'SclZfCartPayment\Entity\PaymentInterface',
+            'SclZfCartPayment\Entity\Payment',
             $this->entity,
-            'Payment must implement SclZfCartPayment\Entity\PaymentInterface'
+            'Payment must implement SclZfCartPayment\Entity\Payment'
         );
 
         $this->assertInstanceOf(
@@ -83,7 +83,7 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
             array('status', 'pending'),
             array('status', 'failed'),
             array('status', 'success'),
-            array('order', $this->getMock('SclZfCart\Entity\OrderInterface')),
+            array('order', $this->getMock('SclZfCart\Entity\Order')),
             array('date', new \DateTime()),
             array('type', 'PAYMENT'),
             array('amount', 22.33),

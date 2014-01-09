@@ -66,7 +66,7 @@ class CartListenerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test when process() is passed an event with a target which isn't an instanceof
-     * \SclZfCart\Entity\OrderInterface that an exception is throw.
+     * \SclZfCart\Entity\Order that an exception is throw.
      */
     public function test_process_with_bad_order()
     {
@@ -95,7 +95,7 @@ class CartListenerTest extends \PHPUnit_Framework_TestCase
     public function test_process()
     {
         $method  = $this->getMock('SclZfCartPayment\PaymentMethodInterface');
-        $payment = $this->getMock('SclZfCartPayment\Entity\PaymentInterface');
+        $payment = $this->getMock('SclZfCartPayment\Entity\Payment');
 
         $this->setSelectedMethod($method);
 
@@ -119,7 +119,7 @@ class CartListenerTest extends \PHPUnit_Framework_TestCase
     {
         $transactionId = 'TX-00001';
 
-        $payment = $this->getMock('SclZfCartPayment\Entity\PaymentInterface');
+        $payment = $this->getMock('SclZfCartPayment\Entity\Payment');
 
         $payment->expects($this->once())
                 ->method('setTransactionId')

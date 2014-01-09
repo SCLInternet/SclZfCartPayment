@@ -1,29 +1,24 @@
 <?php
 namespace SclZfCartPayment\Listener;
 
-use SclZfCartPayment\Entity\PaymentInterface;
+use SclZfCartPayment\Entity\Payment;
 use SclZfCartPayment\Exception\RuntimeException;
 use SclZfCartPayment\Mapper\PaymentMapperInterface;
 use SclZfCartPayment\Method\MethodSelectorInterface;
 use SclZfCartPayment\PaymentMethodInterface;
 use SclZfCart\CartEvent;
-use SclZfCart\Entity\OrderInterface;
+use SclZfCart\Entity\Order;
 use SclZfUtilities\Model\Route;
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\EventManager\SharedListenerAggregateInterface;
 use Zend\Form\Form;
 
-/**
- * Provides the methods which are attach to the cart's event manager.
- *
- * @author Tom Oram <tom@scl.co.uk>
- */
 class CartListener implements SharedListenerAggregateInterface
 {
     const CHECKOUT_PRIORITY = 100;
     const PROCESS_PRIORITY  = 100;
 
-    private $listeners = array();
+    private $listeners = [];
 
     private $methodSelector;
 
@@ -92,9 +87,9 @@ class CartListener implements SharedListenerAggregateInterface
     /**
      * Inserts the select payment page into the checkout process.
      *
-     * @todo Implement commented out bits
-     * @param  CartEvent               $event
      * @return Route|null
+     *
+     * @todo Implement commented out bits
      */
     public function checkout(CartEvent $event)
     {
@@ -119,19 +114,19 @@ class CartListener implements SharedListenerAggregateInterface
     /**
      * Adjusts the complete checkout button to redirect to the payment page.
      *
-     * @param  CartEvent               $event
      * @return Form
-     * @throws RuntimeException        When the event target isn't an instanceof OrderInterface
+     *
+     * @throws RuntimeException        When the event target isn't an instanceof Order
      * @throws RuntimeException        When the a payment method is not selected
      */
     public function process(CartEvent $event)
     {
-        /* @var $order \SclZfCart\Entity\OrderInterface */
+        /* @var $order \SclZfCart\Entity\Order */
         $order = $event->getTarget();
 
-        if (!$order instanceof OrderInterface) {
+        if (!$order instanceof Order) {
             throw RuntimeException::invalidObjectType(
-                '\SclZfCart\Entity\OrderInterface',
+                '\SclZfCart\Entity\Order',
                 $order
             );
         }
@@ -153,7 +148,7 @@ class CartListener implements SharedListenerAggregateInterface
 
         $payment->setDate(new \DateTime());
         $payment->setOrder($order);
-        $payment->setStatus(PaymentInterface::STATUS_PENDING);
+        $payment->setStatus(Payment::STATUS_PENDING);
         $payment->setType(get_class($method));
         $payment->setAmount($order->getTotal());
 
