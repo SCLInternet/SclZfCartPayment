@@ -14,7 +14,7 @@ interface MethodLoaderInterface
 {
     /**
      * Returns a instance of a payment method object by name.
-     * 
+     *
      * @param string $methodName
      * @return PaymentMethodInterface
      * @throws InvalidArgumentException
