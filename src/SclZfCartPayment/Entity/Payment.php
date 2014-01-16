@@ -3,11 +3,15 @@
 namespace SclZfCartPayment\Entity;
 
 use DateTime;
-use SclZfCart\Entity\Order;
+use SCL\Currency\Money;
+use SCL\Currency\MoneyFactory;
 use SclZfCartPayment\Exception\InvalidArgumentException;
+use SclZfCart\Entity\MoneyFactoryAware;
+use SclZfCart\Entity\Order;
 
-class Payment
+class Payment implements MoneyFactoryAware
 {
+
     const STATUS_PENDING = 'pending';
     const STATUS_FAILED  = 'failed';
     const STATUS_SUCCESS = 'success';
@@ -50,6 +54,11 @@ class Payment
     private $amount;
 
     /**
+     * @var MoneyFactory
+     */
+    private $moneyFactory;
+
+    /**
      * List of allowed states.
      */
     private static $validStates = [
@@ -64,6 +73,11 @@ class Payment
     public function __construct()
     {
         $this->date = new DateTime();
+    }
+
+    public function setMoneyFactory(MoneyFactory $moneyFactory)
+    {
+        $this->moneyFactory = $moneyFactory;
     }
 
     /**
@@ -161,18 +175,18 @@ class Payment
     }
 
     /**
-     * @return float
+     * @return Money
      */
     public function getAmount()
     {
-        return $this->amount;
+        return $this->moneyFactory->createFromUnits($this->amount);
     }
 
     /**
-     * @param float $amount
+     * @param Money $amount
      */
-    public function setAmount($amount)
+    public function setAmount(Money $amount)
     {
-        $this->amount = $amount;
+        $this->amount = $amount->getUnits();
     }
 }
